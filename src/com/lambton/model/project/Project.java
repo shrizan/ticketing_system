@@ -2,10 +2,11 @@ package com.lambton.model.project;
 
 import com.lambton.enums.ProjectType;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class Project {
+public class Project implements Serializable {
     private String id;
     private String title;
     private String description;
@@ -22,5 +23,13 @@ public class Project {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public ProjectType getProjectType() {
+        return projectType;
     }
 }
