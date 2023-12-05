@@ -1,6 +1,6 @@
 package com.lambton.store.project;
 
-import com.lambton.enums.ProjectType;
+import com.lambton.enums.project.ProjectType;
 import com.lambton.model.project.*;
 import com.lambton.utility.FileUtility;
 

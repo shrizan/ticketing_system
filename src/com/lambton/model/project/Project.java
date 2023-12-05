@@ -1,11 +1,9 @@
 package com.lambton.model.project;
 
 import com.lambton.common.model.*;
-import com.lambton.enums.ProjectType;
+import com.lambton.enums.project.ProjectType;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class Project extends BaseModel {
     private String title;

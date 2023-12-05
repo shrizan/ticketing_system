@@ -1,7 +1,10 @@
 package com.lambton.store.user;
 
 import com.lambton.enums.user.UserType;
-import com.lambton.model.user.User;
+import com.lambton.model.project.*;
+import com.lambton.model.user.*;
+import com.lambton.model.user.Dev;
+import com.lambton.store.project.*;
 import com.lambton.utility.FileUtility;
 
 import java.util.List;
@@ -10,14 +13,15 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class DevUserStore extends BaseUserStoreImpl {
-    public DevUserStore(FileUtility fileUtility) {
+public class DevUserStore extends BaseUserStoreImpl<Dev> {
+
+    public DevUserStore(FileUtility<Dev> fileUtility) {
         super(fileUtility);
     }
 
     @Override
     public List<User> search(int page, int size, Optional<String> firstName, Optional<String> lastName) {
-        Map<String, User> users = readAllEntities();
+        Map<String, Dev> users = fileUtility.readAllEntities();
         return users
                 .values()
                 .stream()

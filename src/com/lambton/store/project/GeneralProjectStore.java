@@ -1,6 +1,6 @@
 package com.lambton.store.project;
 
-import com.lambton.enums.ProjectType;
+import com.lambton.enums.project.ProjectType;
 import com.lambton.model.project.*;
 import com.lambton.utility.FileUtility;
 
@@ -10,16 +10,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GeneralProjectStore extends ProjectStoreImp<GeneralProject> {
+public class GeneralProjectStore extends ProjectStoreImp<Dev> {
 
-    public GeneralProjectStore(FileUtility<GeneralProject> fileUtility) {
+    public GeneralProjectStore(FileUtility<Dev> fileUtility) {
         super(fileUtility);
     }
 
     @Override
     public List<Project> search(int page, int size, Optional<String> optionalTitle) {
-        Map<String, GeneralProject> projects = fileUtility.readAllEntities();
-        Stream<GeneralProject> projectStream = projects.values()
+        Map<String, Dev> projects = fileUtility.readAllEntities();
+        Stream<Dev> projectStream = projects.values()
                 .stream()
                 .skip(page * size)
                 .limit(size)

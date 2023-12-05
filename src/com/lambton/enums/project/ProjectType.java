@@ -1,4 +1,4 @@
-package com.lambton.enums;
+package com.lambton.enums.project;
 
 public enum ProjectType {
     NEW,
