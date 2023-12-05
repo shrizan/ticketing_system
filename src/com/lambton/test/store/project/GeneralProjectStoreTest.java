@@ -15,7 +15,7 @@ import java.util.Optional;
 
 class GeneralProjectStoreTest {
     private static final String GENERAL_PROJECT_STORE_FILE = "test_general_project_file";
-    private final static FileUtility fileUtility = new FileUtilityImpl(AppConstant.GENERAL_PROJECT_STORE_FILE, GENERAL_PROJECT_STORE_FILE);
+    private final static FileUtilityImpl<GeneralProject> fileUtility = new FileUtilityImpl(AppConstant.GENERAL_PROJECT_STORE_FILE, GENERAL_PROJECT_STORE_FILE);
     private final static GeneralProjectStore store = new GeneralProjectStore(fileUtility);
 
     @BeforeEach
@@ -31,35 +31,32 @@ class GeneralProjectStoreTest {
     @Test
     public void createProject() {
         GeneralProject generalProject = new GeneralProject("TITLE", "DESCRIPTION");
-        store.createProject(generalProject);
-        Project storedProject = store.getProjectById(generalProject.getId());
+        store.createEntity(generalProject);
+        Project storedProject = store.getEntity(generalProject.getId());
         Assertions.assertEquals(storedProject.getId(), generalProject.getId());
     }
 
     @Test
     public void getUser() {
         GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-        store.createProject(generalProject);
-        Assertions.assertEquals(generalProject.getId(), store.getProjectById(generalProject.getId()).getId());
+        store.createEntity(generalProject);
+        Assertions.assertEquals(generalProject.getId(), store.getEntity(generalProject.getId()).getId());
     }
 
     @Test
     public void removeUser() {
         GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-        store.createProject(generalProject);
-        store.deleteProject(generalProject.getId());
-        Assertions.assertThrows(
-                RuntimeException.class,
-                () -> store.getProjectById(generalProject.getId())
-        );
+        store.createEntity(generalProject);
+        store.deleteEntity(generalProject.getId());
+        Assertions.assertNull(store.getEntity(generalProject.getId()));
     }
 
     @Test
     public void search() {
         GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
         GeneralProject generalProject2 = new GeneralProject("SHREEJAN", "ACHARYA");
-        store.createProject(generalProject2);
-        store.createProject(generalProject);
+        store.createEntity(generalProject2);
+        store.createEntity(generalProject);
         var response = store.search(
                 0,
                 10,
@@ -72,8 +69,8 @@ class GeneralProjectStoreTest {
     public void searchByTitle() {
         GeneralProject generalProject = new GeneralProject("Shreejan", "Acharya");
         GeneralProject generalProject2 = new GeneralProject("Alishan", "Gurung");
-        store.createProject(generalProject2);
-        store.createProject(generalProject);
+        store.createEntity(generalProject2);
+        store.createEntity(generalProject);
         var response = store.search(
                 0,
                 10,
@@ -86,7 +83,7 @@ class GeneralProjectStoreTest {
     public void search_moreThan10() {
         for (int i = 0; i < 12; i++) {
             GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-            store.createProject(generalProject);
+            store.createEntity(generalProject);
         }
         var response = store.search(
                 1,

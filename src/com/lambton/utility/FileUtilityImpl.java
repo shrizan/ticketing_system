@@ -1,13 +1,16 @@
 package com.lambton.utility;
 
+import com.lambton.common.model.*;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.*;
 
 import static com.lambton.common.AppConstant.FILES;
 
-public class FileUtilityImpl implements FileUtility {
+public final class FileUtilityImpl<T extends BaseModel> implements FileUtility<T> {
     private final String fileName;
     private final String projectPrefix;
     private final static Path ROOT_FOLDER_PATH = Paths.get(System.getProperty("user.dir"));
@@ -49,4 +52,29 @@ public class FileUtilityImpl implements FileUtility {
         return filePath.toString();
     }
 
+    @Override
+    public Map<String, T> readAllEntities() {
+        try (
+                FileInputStream fileInputStream = new FileInputStream(getFilePath());
+                ObjectInputStream inputStream = new ObjectInputStream(fileInputStream)
+        ) {
+            return (Map<String, T>) inputStream.readObject();
+        } catch (EOFException e) {
+            return new HashMap<>();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public boolean writeToFile(Map<String, T> entities) {
+        try (
+                ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(getFilePath()))
+        ) {
+            outputStream.writeObject(entities);
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

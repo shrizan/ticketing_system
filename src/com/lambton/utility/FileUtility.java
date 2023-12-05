@@ -1,7 +1,18 @@
 package com.lambton.utility;
 
-public interface FileUtility {
-    public void initFiles();
-    public void deleteFile();
-    public String getFilePath();
+import com.lambton.common.model.*;
+import com.lambton.model.project.*;
+
+import java.util.*;
+
+public interface FileUtility<T extends BaseModel> {
+    void initFiles();
+
+    void deleteFile();
+
+    String getFilePath();
+
+    Map<String, T> readAllEntities();
+
+    boolean writeToFile(Map<String, T> entities);
 }
