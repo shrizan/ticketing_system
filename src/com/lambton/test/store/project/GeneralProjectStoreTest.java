@@ -1,10 +1,9 @@
 package com.lambton.test.store.project;
 
 import com.lambton.common.AppConstant;
-import com.lambton.model.project.GeneralProject;
+import com.lambton.model.project.Dev;
 import com.lambton.model.project.Project;
 import com.lambton.store.project.GeneralProjectStore;
-import com.lambton.utility.FileUtility;
 import com.lambton.utility.FileUtilityImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 class GeneralProjectStoreTest {
     private static final String GENERAL_PROJECT_STORE_FILE = "test_general_project_file";
-    private final static FileUtility fileUtility = new FileUtilityImpl(AppConstant.GENERAL_PROJECT_STORE_FILE, GENERAL_PROJECT_STORE_FILE);
+    private final static FileUtilityImpl<Dev> fileUtility = new FileUtilityImpl(AppConstant.GENERAL_PROJECT_STORE_FILE, GENERAL_PROJECT_STORE_FILE);
     private final static GeneralProjectStore store = new GeneralProjectStore(fileUtility);
 
     @BeforeEach
@@ -30,36 +29,33 @@ class GeneralProjectStoreTest {
 
     @Test
     public void createProject() {
-        GeneralProject generalProject = new GeneralProject("TITLE", "DESCRIPTION");
-        store.createProject(generalProject);
-        Project storedProject = store.getProjectById(generalProject.getId());
+        Dev generalProject = new Dev("TITLE", "DESCRIPTION");
+        store.createEntity(generalProject);
+        Project storedProject = store.getEntity(generalProject.getId());
         Assertions.assertEquals(storedProject.getId(), generalProject.getId());
     }
 
     @Test
     public void getUser() {
-        GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-        store.createProject(generalProject);
-        Assertions.assertEquals(generalProject.getId(), store.getProjectById(generalProject.getId()).getId());
+        Dev generalProject = new Dev("SHREEJAN", "ACHARYA");
+        store.createEntity(generalProject);
+        Assertions.assertEquals(generalProject.getId(), store.getEntity(generalProject.getId()).getId());
     }
 
     @Test
     public void removeUser() {
-        GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-        store.createProject(generalProject);
-        store.deleteProject(generalProject.getId());
-        Assertions.assertThrows(
-                RuntimeException.class,
-                () -> store.getProjectById(generalProject.getId())
-        );
+        Dev generalProject = new Dev("SHREEJAN", "ACHARYA");
+        store.createEntity(generalProject);
+        store.deleteEntity(generalProject.getId());
+        Assertions.assertNull(store.getEntity(generalProject.getId()));
     }
 
     @Test
     public void search() {
-        GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-        GeneralProject generalProject2 = new GeneralProject("SHREEJAN", "ACHARYA");
-        store.createProject(generalProject2);
-        store.createProject(generalProject);
+        Dev generalProject = new Dev("SHREEJAN", "ACHARYA");
+        Dev generalProject2 = new Dev("SHREEJAN", "ACHARYA");
+        store.createEntity(generalProject2);
+        store.createEntity(generalProject);
         var response = store.search(
                 0,
                 10,
@@ -70,10 +66,10 @@ class GeneralProjectStoreTest {
 
     @Test
     public void searchByTitle() {
-        GeneralProject generalProject = new GeneralProject("Shreejan", "Acharya");
-        GeneralProject generalProject2 = new GeneralProject("Alishan", "Gurung");
-        store.createProject(generalProject2);
-        store.createProject(generalProject);
+        Dev generalProject = new Dev("Shreejan", "Acharya");
+        Dev generalProject2 = new Dev("Alishan", "Gurung");
+        store.createEntity(generalProject2);
+        store.createEntity(generalProject);
         var response = store.search(
                 0,
                 10,
@@ -85,8 +81,8 @@ class GeneralProjectStoreTest {
     @Test
     public void search_moreThan10() {
         for (int i = 0; i < 12; i++) {
-            GeneralProject generalProject = new GeneralProject("SHREEJAN", "ACHARYA");
-            store.createProject(generalProject);
+            Dev generalProject = new Dev("SHREEJAN", "ACHARYA");
+            store.createEntity(generalProject);
         }
         var response = store.search(
                 1,
