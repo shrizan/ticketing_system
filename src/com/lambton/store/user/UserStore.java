@@ -2,7 +2,6 @@ package com.lambton.store.user;
 
 import com.lambton.common.store.*;
 import com.lambton.enums.user.UserType;
-import com.lambton.model.project.Project;
 import com.lambton.model.user.User;
 
 import java.util.List;

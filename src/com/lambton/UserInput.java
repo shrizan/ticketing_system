@@ -3,7 +3,6 @@ package com.lambton;
 import com.lambton.common.AppConstant;
 import com.lambton.common.model.BaseModel;
 import com.lambton.enums.user.UserType;
-import com.lambton.model.project.Project;
 import com.lambton.model.user.Dev;
 import com.lambton.model.user.Manager;
 import com.lambton.model.user.QualityAssurance;
@@ -27,9 +26,8 @@ public class UserInput extends InputUtility {
         List<User> updatedUsers = users.stream().filter(user -> !suggestedUser.stream().map(BaseModel::getId).collect(Collectors.toList()).contains(user.getId()))
                 .collect(Collectors.toList());
         displayUserList(updatedUsers);
-        int choice = -1;
         while (true) {
-            choice = getInt("Select SN(Enter zero to done):");
+            int choice = getInt("Select SN(Enter zero to done):");
             if (choice == 0) break;
             if (choice < 1 || choice > updatedUsers.size()) {
                 System.out.println("Invalid selection");
@@ -39,7 +37,7 @@ public class UserInput extends InputUtility {
     }
 
     static UserType getUserType(UserType... userTypes) {
-        UserType userType = userTypes.length > 0 ? userTypes[0] : null;
+        UserType userType;
         int choice = 0;
         while (!(choice == 1 || choice == 2 || choice == 3)) {
             choice = getInt("Select User Type: 1. Manager 2. QA 3. Dev\nSelect Option:");
