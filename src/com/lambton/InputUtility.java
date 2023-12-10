@@ -30,6 +30,17 @@ abstract public class InputUtility {
         }
     }
 
+    public static long getLong(String message) {
+        while (true) {
+            System.out.print(message);
+            try {
+                return Long.parseLong(scanner.nextLine());
+            } catch (Exception ex) {
+                System.out.println("Invalid input!!!");
+            }
+        }
+    }
+
     public static String getString(String message) {
         while (true) {
             System.out.print(message);

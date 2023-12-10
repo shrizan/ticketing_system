@@ -35,4 +35,7 @@ public class AppConstant {
             }
         }
     }
+
+    public static final long DEFAULT_PAGE = 0;
+    public static final long DEFAULT_SIZE = 10;
 }
