@@ -9,11 +9,17 @@ import com.lambton.utility.FileUtility;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class ProjectStoreImp<T extends Project> extends StoreImpl<T> implements ProjectStore<T> {
 
     public ProjectStoreImp(FileUtility<T> fileUtility) {
         super(fileUtility);
+    }
+
+    @Override
+    public Map<String,T> allEntities() {
+        return fileUtility.readAllEntities();
     }
 }

@@ -14,6 +14,11 @@ abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> imple
         super(fileUtility);
     }
 
+    @Override
+    public Map<String, T> allEntities() {
+        return null;
+    }
+
     public Stream<T> searchStream(
             long page,
             long size,
@@ -34,15 +39,6 @@ abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> imple
                 .filter(filterByIssueStatus(optionalIssueStatus));
     }
 
-    public abstract List<T> search(
-            long page,
-            long size,
-            Optional<String> optionalTitle,
-            Optional<String> optionalAssigneeId,
-            Optional<Priority> optionalPriority,
-            Optional<IssueStatus> optionalIssueStatus
-    );
-
     private static <T extends Issue> Predicate<T> filterByIssueStatus(Optional<IssueStatus> optionalIssueStatus) {
         return issue -> optionalIssueStatus.map(issueStatus -> issue.getIssueStatus().equals(issueStatus)).orElse(true);
     }
@@ -52,7 +48,7 @@ abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> imple
     }
 
     private static <T extends Issue> Predicate<T> filterByAssigneeId(Optional<String> optionalAssigneeId) {
-        return issue -> optionalAssigneeId.map(assignedId -> issue.getAssignee().getId().equals(assignedId)).orElse(true);
+        return issue -> optionalAssigneeId.map(assignedId -> issue.getAssignedBy().getId().equals(assignedId)).orElse(true);
     }
 
     private static <T extends Issue> Predicate<T> filterByTitle(Optional<String> optionalTitle) {

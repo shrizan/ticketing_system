@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface ProjectStore<T extends Project> extends Store<T> {
 
-    List<Project> search(int page, int size, Optional<String> optionalTitle);
+    List<Project> search(long page, long size, Optional<String> optionalTitle);
 }

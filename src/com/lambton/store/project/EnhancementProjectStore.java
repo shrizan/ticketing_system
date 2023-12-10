@@ -17,7 +17,7 @@ public class EnhancementProjectStore extends ProjectStoreImp<EnhancementProject>
     }
 
     @Override
-    public List<Project> search(int page, int size, Optional<String> optionalTitle) {
+    public List<Project> search(long page, long size, Optional<String> optionalTitle) {
         Map<String, EnhancementProject> projects = fileUtility.readAllEntities();
         Stream<EnhancementProject> projectStream = projects.values()
                 .stream()

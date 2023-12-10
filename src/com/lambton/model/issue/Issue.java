@@ -15,17 +15,17 @@ public class Issue extends BaseModel {
     private String description;
     private Project project;
     private Issue parent;
-    private User assignee;
+    private User assignedBy;
     private List<User> assignedTos = new ArrayList<>();
     private IssueType issueType;
     private Priority priority;
     private IssueStatus issueStatus;
 
-    public Issue(String title, String description, Project project, User assignee, IssueType issueType, Priority priority, IssueStatus issueStatus) {
+    public Issue(String title, String description, Project project, User assignedBy, IssueType issueType, Priority priority, IssueStatus issueStatus) {
         this.title = title;
         this.description = description;
         this.project = project;
-        this.assignee = assignee;
+        this.assignedBy = assignedBy;
         this.issueType = issueType;
         this.priority = priority;
         this.issueStatus = issueStatus;
@@ -33,6 +33,10 @@ public class Issue extends BaseModel {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public IssueType getIssueType() {
@@ -47,7 +51,19 @@ public class Issue extends BaseModel {
         return priority;
     }
 
-    public User getAssignee() {
-        return assignee;
+    public User getAssignedBy() {
+        return assignedBy;
+    }
+
+    public void setParent(Issue parent) {
+        this.parent = parent;
+    }
+
+    public void setAssignedTos(List<User> assignedTos) {
+        this.assignedTos = assignedTos;
+    }
+
+    public Project getProject() {
+        return project;
     }
 }

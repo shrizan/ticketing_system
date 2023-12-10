@@ -22,6 +22,10 @@ public class Project extends BaseModel {
         return title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public ProjectType getProjectType() {
         return projectType;
     }

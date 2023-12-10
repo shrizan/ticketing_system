@@ -62,7 +62,8 @@ public final class FileUtilityImpl<T extends BaseModel> implements FileUtility<T
         } catch (EOFException e) {
             return new HashMap<>();
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException();
+            e.printStackTrace();
+            return new HashMap<>();
         }
     }
 

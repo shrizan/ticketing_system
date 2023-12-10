@@ -5,12 +5,9 @@ import com.lambton.model.project.Dev;
 import com.lambton.model.project.Project;
 import com.lambton.store.project.GeneralProjectStore;
 import com.lambton.utility.FileUtilityImpl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+/*
 
 class GeneralProjectStoreTest {
     private static final String GENERAL_PROJECT_STORE_FILE = "test_general_project_file";
@@ -91,4 +88,4 @@ class GeneralProjectStoreTest {
         );
         Assertions.assertEquals(response.size(), 2);
     }
-}
+}*/

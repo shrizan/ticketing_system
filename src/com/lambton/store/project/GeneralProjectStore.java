@@ -7,6 +7,7 @@ import com.lambton.utility.FileUtility;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -17,7 +18,7 @@ public class GeneralProjectStore extends ProjectStoreImp<Dev> {
     }
 
     @Override
-    public List<Project> search(int page, int size, Optional<String> optionalTitle) {
+    public List<Project> search(long page, long size, Optional<String> optionalTitle) {
         Map<String, Dev> projects = fileUtility.readAllEntities();
         Stream<Dev> projectStream = projects.values()
                 .stream()

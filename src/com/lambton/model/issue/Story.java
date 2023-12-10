@@ -7,7 +7,7 @@ import com.lambton.model.project.Project;
 import com.lambton.model.user.User;
 
 public class Story extends Issue{
-    public Story(String title, String description, Project project, User assignee, Priority priority, IssueStatus issueStatus) {
-        super(title, description, project, assignee, IssueType.STORY, priority, issueStatus);
+    public Story(String title, String description, Project project, User assignedBy, Priority priority, IssueStatus issueStatus) {
+        super(title, description, project, assignedBy, IssueType.STORY, priority, issueStatus);
     }
 }
