@@ -53,7 +53,7 @@ public class IssueInput extends InputUtility {
     static Project selectAProject() {
         while (true) {
             String projectTitle = getString("Project Title:");
-            List<Project> projects = ProjectInput.projectService.search(0, 10, Optional.of(projectTitle), ProjectType.ENHANCEMENT);
+            List<Project> projects = ProjectInput.projectService.search(0, 10, Optional.of(projectTitle), Optional.of(ProjectType.ENHANCEMENT));
             ProjectInput.searchProject(projects);
             String input = getString("S for search again. Or enter index for project to select");
             Project project = null;
@@ -139,7 +139,7 @@ public class IssueInput extends InputUtility {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    IssueType.STORY
+                    Optional.empty()
             );
         } else {
             IssueType issueType = getIssueType();
@@ -149,7 +149,7 @@ public class IssueInput extends InputUtility {
                     Optional.empty(),
                     Optional.empty(),
                     Optional.empty(),
-                    issueType
+                    Optional.empty()
             );
         }
         System.out.println("Title\t\tDescription");
@@ -243,7 +243,7 @@ public class IssueInput extends InputUtility {
                 Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
-                issueType
+                Optional.empty()
         );
         displayList(issues);
         int choice = 0;

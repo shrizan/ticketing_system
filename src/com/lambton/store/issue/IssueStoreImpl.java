@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements IssueStore<T> {
+public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements IssueStore<T> {
     public IssueStoreImpl(FileUtility<T> fileUtility) {
         super(fileUtility);
     }
@@ -37,6 +37,11 @@ abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> imple
                 .filter(filterByAssigneeId(optionalAssigneeId))
                 .filter(filterByPriority(optionalPriority))
                 .filter(filterByIssueStatus(optionalIssueStatus));
+    }
+
+    @Override
+    public List<T> search(long page, long size, Optional<String> optionalTitle, Optional<String> optionalAssigneeId, Optional<Priority> optionalPriority, Optional<IssueStatus> optionalIssueStatus, Optional<IssueType> issueType) {
+        return null;
     }
 
     private static <T extends Issue> Predicate<T> filterByIssueStatus(Optional<IssueStatus> optionalIssueStatus) {

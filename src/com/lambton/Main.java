@@ -10,7 +10,7 @@ import static com.lambton.ProjectInput.projectMenu;
 public class Main {
 
     static void initFile() {
-        FileUtilityImpl<Manager> managerFileUtility = new FileUtilityImpl<>(AppConstant.MANAGER_USER_STORE_FILE, AppConstant.PROJECT_PREFIX);
+        FileUtilityImpl<Manager> managerFileUtility = new FileUtilityImpl<>(AppConstant.USER_STORE_FILE, AppConstant.PROJECT_PREFIX);
         managerFileUtility.initFiles();
     }
 

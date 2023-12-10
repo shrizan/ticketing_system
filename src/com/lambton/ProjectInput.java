@@ -48,7 +48,7 @@ public class ProjectInput extends InputUtility {
             size = ProjectInput.getInt("Page(Valid size is greater than 5):");
         }
         String title = ProjectInput.getString("Project title(optional):");
-        List<Project> projects = projectService.search(page, size, Optional.of(title), ProjectType.ENHANCEMENT);
+        List<Project> projects = projectService.search(page, size, Optional.of(title), Optional.of(ProjectType.ENHANCEMENT));
         searchProject(projects);
         int choice = 0;
         while (!(choice == 1 || choice == 2 || choice == 3)) {
@@ -60,7 +60,7 @@ public class ProjectInput extends InputUtility {
             if (!(choice < 1 || choice > projects.size())) {
                 Project project = projects.get(choice - 1);
                 projectService.removeProject(project.getId(), project.getProjectType());
-                searchProject(projectService.search(page, size, Optional.of(title), ProjectType.ENHANCEMENT));
+                searchProject(projectService.search(page, size, Optional.of(title), Optional.of(ProjectType.ENHANCEMENT)));
             } else {
                 System.out.println("You selected wrong!!!");
             }

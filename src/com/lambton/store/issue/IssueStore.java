@@ -23,6 +23,7 @@ public interface IssueStore<T extends Issue> extends Store<T> {
             Optional<String> optionalTitle,
             Optional<String> optionalAssigneeId,
             Optional<Priority> optionalPriority,
-            Optional<IssueStatus> optionalIssueStatus
+            Optional<IssueStatus> optionalIssueStatus,
+            Optional<IssueType> issueType
     );
 }
