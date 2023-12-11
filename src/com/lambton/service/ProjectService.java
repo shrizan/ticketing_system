@@ -35,7 +35,7 @@ public class ProjectService {
         projectStore.updateEntity(projectId, project);
     }
 
-    public void removeProject(String projectId, ProjectType projectType) {
+    public void removeProject(String projectId) {
         if (null == AccountUtility.loggedInUser || AccountUtility.loggedInUser.getUserType() != UserType.MANAGER) {
             System.out.println("User not authorized !!!");
             return;
@@ -43,7 +43,7 @@ public class ProjectService {
         projectStore.deleteEntity(projectId);
     }
 
-    public List<Project> search(int page, int size, Optional<String> title, Optional<ProjectType> projectType) {
+    public List<Project> search(long page, long size, Optional<String> title, Optional<ProjectType> projectType) {
         return projectStore.search(page, size, title, projectType);
     }
 }

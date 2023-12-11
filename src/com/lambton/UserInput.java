@@ -132,6 +132,34 @@ public class UserInput extends InputUtility {
         }
     }
 
+    static User fixedUserList(List<User> users) {
+        while (true) {
+            displayUserList(users);
+
+            int choice = getInt("1. ⛔Remove \t2. ⬅️Back\nSelect Option:");
+            if (choice == 1) {
+                return selectUser(users);
+
+            }
+        }
+    }
+
+    static User displayUserForSelect(List<User> users) {
+        while (true) {
+            displayUserList(users);
+
+            int choice = getInt("1. ℹ️Choose\t2. 🔍Filter\t3. ⬅️Back\nSelect Option:");
+            if (choice == 1) {
+                return selectUser(users);
+
+            } else if (choice == 2) {
+                searchUser();
+            } else if (choice == 3) {
+                return null;
+            }
+        }
+    }
+
     static void displayUser(List<User> users) {
         while (true) {
             displayUserList(users);
