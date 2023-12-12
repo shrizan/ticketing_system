@@ -1,5 +1,6 @@
 package com.lambton;
 
+import com.lambton.common.AppConstant;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
@@ -109,8 +110,14 @@ public class IssueInput extends InputUtility {
         String title = getString("Title:");
         String description = getString("Description:");
         System.out.println("Select a project it belongs");
+        List<Project> projects = ProjectInput.projectService.search(
+                AppConstant.DEFAULT_PAGE,
+                AppConstant.DEFAULT_SIZE,
+                Optional.empty(),
+                Optional.empty()
+        );
+        Project project = ProjectInput.displayProjectsForSelect(projects);
         while (true) {
-            Project project = selectAProject();
             choice = 0;
             while (!(choice == 1 || choice == 2 || choice == 3)) {
                 choice = getInt("Select priority 1.High\t2.Moderate\t3.Low\nEnter Option:");
@@ -124,7 +131,20 @@ public class IssueInput extends InputUtility {
 
     static void assignTo(Issue issue) {
         List<User> users = new ArrayList<>();
-        UserInput.addUsersToSuggestionList(users);
+        String choice = "";
+        System.out.println("Select users to assign:(Enter 0) to exit:");
+        do {
+            List<User> defaultUsers = UserInput.userService.search(
+                    AppConstant.DEFAULT_PAGE,
+                    AppConstant.DEFAULT_SIZE,
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.empty()
+            );
+            User user = UserInput.displayUserForSelect(defaultUsers);
+            users.add(user);
+            choice = getString("Want to add another one?Y/N ");
+        } while (choice.equalsIgnoreCase("y"));
         issue.setAssignedTos(users);
         issueService.updateIssue(issue.getId(), issue);
     }
@@ -211,6 +231,7 @@ public class IssueInput extends InputUtility {
         }
         Priority priority = getPriority(choice);
         Issue updatedIssue = createNewIssue(issue.getIssueType(), title, description, project, priority);
+        updatedIssue.setId(issue.getId());
         issueService.updateIssue(issue.getId(), updatedIssue);
         input = getString("Do you want to update assign to(Y/N):");
         if (input.equalsIgnoreCase("Y")) {
@@ -224,13 +245,13 @@ public class IssueInput extends InputUtility {
 
     }
 
-    static void removeIssue(Issue issue, List<Issue> issues) {
+    static void removeIssue(Issue issue) {
         issueService.removeIssue(issue.getId(), issue.getIssueType());
-        issues.remove(issue);
-        displayList(issues);
+        //issues.remove(issue);
+        //displayList(issues);
     }
 
-    static void display() {
+    static void searchIssue() {
         long page = getInt("Page:");
         long size = getInt("Size:");
         String title = getString("Title:");
@@ -245,34 +266,67 @@ public class IssueInput extends InputUtility {
                 Optional.empty(),
                 Optional.empty()
         );
-        displayList(issues);
-        int choice = 0;
-        while (!(choice == 1 || choice == 2)) {
-            choice = getInt("1. Update 1. Remove");
+        displayIssues(issues);
+
+    }
+
+    public static void issueDetails(Issue issue) {
+        System.out.println(issue);
+        List<Integer> choices = List.of(1, 2, 3);
+        while (true) {
+            int choice = getInt("1. Update 2. Remove 3. Back\nSelect Option:");
+            if (choices.contains(choice)) {
+                if (choice == 1) {
+                    updateIssue(issue);
+                } else if (choice == 2) {
+                    removeIssue(issue);
+                } else {
+                    return;
+                }
+            }
         }
-        Issue issue = null;
-        if (choice == 1) {
-            choice = 0;
-            while (true) {
-                choice = getInt("Select a SN:");
-                if (choice < 1 || choice > issues.size()) System.out.println("Invalid input!!!");
-                else {
-                    issue = issues.get(choice - 1);
-                    break;
+    }
+
+    static void displayIssues(List<Issue> issues) {
+        System.out.println("SN \t\t | Title | \t\t | Description |");
+        for (int i = 0; i < issues.size(); i++) {
+            Issue issue = issues.get(i);
+            System.out.printf("%d \t\t | %s | \t\t | %s |\n", i + 1, issue.getTitle(), issue.getDescription());
+        }
+    }
+
+    static Issue getIssueFromList(List<Issue> issues) {
+        while (true) {
+            int choice = getInt("Select From the list:");
+            if (choice > 0 && choice <= issues.size()) return issues.get(choice - 1);
+            else System.out.println("Invalid selection!!!");
+        }
+    }
+
+    static void display() {
+        List<Issue> issues = issueService.searchIssue(
+                AppConstant.DEFAULT_PAGE,
+                AppConstant.DEFAULT_SIZE,
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty()
+        );
+        displayIssues(issues);
+        List<Integer> choices = List.of(1, 2, 3);
+        while (true) {
+            int choice = getInt("1. Details  2. Filter 3. Back\nSelect Option:");
+            if (choices.contains(choice)) {
+                if (choice == 1) {
+                    issueDetails(getIssueFromList(issues));
+                } else if (choice == 2) {
+                    searchIssue();
                 }
+                return;
+            } else {
+                System.out.println("Invalid Input");
             }
-            updateIssue(issue);
-        } else {
-            choice = 0;
-            while (true) {
-                choice = getInt("Select a SN:");
-                if (choice < 1 || choice > issues.size()) System.out.println("Invalid input!!!");
-                else {
-                    issue = issues.get(choice - 1);
-                    break;
-                }
-            }
-            removeIssue(issue, issues);
         }
     }
 

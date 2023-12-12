@@ -30,6 +30,22 @@ public class ProjectInput extends InputUtility {
         }
     }
 
+    static Project displayProjectsForSelect(List<Project> projects) {
+        while (true) {
+            displayProjectsList(projects);
+
+            int choice = getInt("1. ℹ️Choose\t2. 🔍Filter\t3. ⬅️Back\nSelect Option:");
+            if (choice == 1) {
+                return selectProject(projects);
+
+            } else if (choice == 2) {
+                searchProject();
+            } else if (choice == 3) {
+                return null;
+            }
+        }
+    }
+
     static void displayProjectsList(List<Project> projects) {
         System.out.println("SN\t\tTitle\t\tDescription");
         for (int i = 0; i < projects.size(); i++) {

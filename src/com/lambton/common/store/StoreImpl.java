@@ -33,7 +33,7 @@ public abstract class StoreImpl<T extends BaseModel> implements Store<T> {
     @Override
     public T updateEntity(String entityId, T entity) {
         var oldEntity = getEntity(entityId);
-        if (null == oldEntity || !entityId.equals(entity.getId())) throw new EntityNotFoundException();
+        if (null == oldEntity) throw new EntityNotFoundException();
         var allEntities = fileUtility.readAllEntities();
         allEntities.remove(entityId);
         allEntities.put(entity.getId(), entity);
