@@ -91,11 +91,11 @@ public class ProjectInput extends InputUtility {
         if (!description.isEmpty()) {
             project.setDescription(description);
         }
-        projectService.updateProject(project.getId(), project);
+        projectService.update(project.getId(), project);
     }
 
     static void remove(Project project) {
-        projectService.removeProject(project.getId());
+        projectService.remove(project.getId());
     }
 
     static void removeTeamMember(Project project) {
@@ -113,7 +113,7 @@ public class ProjectInput extends InputUtility {
             System.out.println("Team member does not exist!!!");
         } else {
             project.getTeam().remove(user);
-            projectService.updateProject(project.getId(), project);
+            projectService.update(project.getId(), project);
             System.out.println("Team member removed!!!");
         }
     }
@@ -134,7 +134,7 @@ public class ProjectInput extends InputUtility {
             System.out.println("User is already in the team");
         } else {
             project.getTeam().add(user);
-            projectService.updateProject(project.getId(), project);
+            projectService.update(project.getId(), project);
             System.out.println("Team member added");
         }
     }
@@ -148,11 +148,11 @@ public class ProjectInput extends InputUtility {
                 if (choice == 1) {
                     Comment comment = CommentInput.getComment();
                     project.getComments().add(comment);
-                    projectService.updateProject(project.getId(), project);
+                    projectService.update(project.getId(), project);
                 } else if (choice == 2) {
                     Comment comment = CommentInput.selectComment(project.getComments());
                     project.getComments().remove(comment);
-                    projectService.updateProject(project.getId(), project);
+                    projectService.update(project.getId(), project);
                 } else {
                     return;
                 }
@@ -179,7 +179,7 @@ public class ProjectInput extends InputUtility {
                 } else if (choice == 6) {
                     ProjectStatus status = getStatus();
                     project.setProjectStatus(status);
-                    projectService.updateProject(project.getId(), project);
+                    projectService.update(project.getId(), project);
                 }
                 return;
             }
@@ -223,7 +223,7 @@ public class ProjectInput extends InputUtility {
             choice = ProjectInput.getInt("Enter SN from the view:");
             if (!(choice < 1 || choice > projects.size())) {
                 Project project = projects.get(choice - 1);
-                projectService.removeProject(project.getId());
+                projectService.remove(project.getId());
                 displayProjects(projectService.search(page, size, Optional.of(title), Optional.of(ProjectType.ENHANCEMENT)));
             } else {
                 System.out.println("You selected wrong!!!");
@@ -239,7 +239,7 @@ public class ProjectInput extends InputUtility {
             System.out.println("3.⬅️ Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
             if (choice == 1) {
-                projectService.createProject(getProjectUserInput());
+                projectService.create(getProjectUserInput());
             } else if (choice == 2) {
                 List<Project> projects = projectService.search(
                         AppConstant.DEFAULT_PAGE,

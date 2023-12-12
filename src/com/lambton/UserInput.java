@@ -79,7 +79,7 @@ public class UserInput extends InputUtility {
     }
 
     static void removeUser(User user) {
-        userService.removeUser(user);
+        userService.remove(user.getId());
     }
 
     static void updateUser(User user) {
@@ -92,7 +92,7 @@ public class UserInput extends InputUtility {
         user.setFirstName(isBlank(firstName) ? user.getFirstName() : firstName);
         user.setLastName(isBlank(lastName) ? user.getLastName() : lastName);
         user.setUsername(isBlank(username) ? user.getUsername() : username);
-        userService.updateUser(user);
+        userService.update(user.getId(), user);
     }
 
     static void displayUserList(List<User> users) {
@@ -218,7 +218,7 @@ public class UserInput extends InputUtility {
             System.out.println("3.⬅️ Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
             if (choice == 1) {
-                userService.createUser(getUserInput());
+                userService.create(getUserInput());
             } else if (choice == 2) {
                 viewUser();
             } else if (choice == 3) {

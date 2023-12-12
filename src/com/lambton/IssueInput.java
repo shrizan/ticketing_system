@@ -163,7 +163,7 @@ public class IssueInput extends InputUtility {
             choice = getString("Want to add another one?Y/N ");
         } while (choice.equalsIgnoreCase("y"));
         issue.setAssignedTos(users);
-        issueService.updateIssue(issue.getId(), issue);
+        issueService.update(issue.getId(), issue);
     }
 
     static void addIssuesToSuggestionList(Issue issue) {
@@ -209,13 +209,13 @@ public class IssueInput extends InputUtility {
         String choice = getString("Y to Link to parent other No:");
         if (choice.equalsIgnoreCase("Y")) {
             addIssuesToSuggestionList(issue);
-            issueService.updateIssue(issue.getId(), issue);
+            issueService.update(issue.getId(), issue);
             System.out.println("Parent linked");
         }
     }
 
     static void createNewIssue() {
-        Issue issue = issueService.createIssue(getIssueInput());
+        Issue issue = issueService.create(getIssueInput());
         if (issue != null) {
             assignTo(issue);
             addParent(issue);
@@ -249,7 +249,7 @@ public class IssueInput extends InputUtility {
         Priority priority = getPriority(choice);
         Issue updatedIssue = createNewIssue(issue.getIssueType(), title, description, project, priority);
         updatedIssue.setId(issue.getId());
-        issueService.updateIssue(issue.getId(), updatedIssue);
+        issueService.update(issue.getId(), updatedIssue);
         input = getString("Do you want to update assign to(Y/N):");
         if (input.equalsIgnoreCase("Y")) {
             assignTo(issue);
@@ -263,7 +263,7 @@ public class IssueInput extends InputUtility {
     }
 
     static void removeIssue(Issue issue) {
-        issueService.removeIssue(issue.getId(), issue.getIssueType());
+        issueService.remove(issue.getId());
         //issues.remove(issue);
         //displayList(issues);
     }
@@ -296,11 +296,11 @@ public class IssueInput extends InputUtility {
                 if (choice == 1) {
                     Comment comment = CommentInput.getComment();
                     issue.getComment().add(comment);
-                    issueService.updateIssue(issue.getId(), issue);
+                    issueService.update(issue.getId(), issue);
                 } else if (choice == 2) {
                     Comment comment = CommentInput.selectComment(issue.getComment());
                     issue.getComment().remove(comment);
-                    issueService.updateIssue(issue.getId(), issue);
+                    issueService.update(issue.getId(), issue);
                 } else {
                     return;
                 }
@@ -324,7 +324,7 @@ public class IssueInput extends InputUtility {
                     System.out.println("Old status");
                     IssueStatus status = getIssueStatus();
                     issue.setIssueStatus(status);
-                    issueService.updateIssue(issue.getId(), issue);
+                    issueService.update(issue.getId(), issue);
                 } else {
                     return;
                 }
