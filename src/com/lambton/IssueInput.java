@@ -5,6 +5,7 @@ import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
 import com.lambton.enums.project.ProjectType;
+import com.lambton.model.comment.Comment;
 import com.lambton.model.issue.Bug;
 import com.lambton.model.issue.Issue;
 import com.lambton.model.issue.Story;
@@ -51,6 +52,24 @@ public class IssueInput extends InputUtility {
         return getIssueType(choice);
     }
 
+    static IssueStatus getIssueStatus() {
+        List<Integer> choices = List.of(1, 2, 3, 4);
+        int choice = 0;
+        while (!choices.contains(choice)) {
+            choice = getInt("1.TODO\t2.IN_PROGRESS\t3.REVIEW\t4.COMPLETED\nEnter Option:");
+        }
+        switch (choice) {
+            case 1:
+                return IssueStatus.TODO;
+            case 2:
+                return IssueStatus.IN_PROGRESS;
+            case 3:
+                return IssueStatus.REVIEW;
+            default:
+                return IssueStatus.COMPLETED;
+        }
+    }
+
     static Project selectAProject() {
         while (true) {
             String projectTitle = getString("Project Title:");
@@ -58,9 +77,7 @@ public class IssueInput extends InputUtility {
             ProjectInput.displayProjects(projects);
             String input = getString("S for search again. Or enter index for project to select");
             Project project = null;
-            if (input.equalsIgnoreCase("s")) {
-                continue;
-            } else {
+            if (!input.equalsIgnoreCase("s")) {
                 try {
                     project = projects.get(Integer.parseInt(input) - 1);
                     System.out.println(project);
@@ -270,16 +287,44 @@ public class IssueInput extends InputUtility {
 
     }
 
+    static void displayComments(Issue issue) {
+        CommentInput.displayComments(issue.getComment());
+        List<Integer> choices = List.of(1, 2, 3);
+        while (true) {
+            int choice = getInt("1. Add 2. Remove 3. Go Back");
+            if (choices.contains(choice)) {
+                if (choice == 1) {
+                    Comment comment = CommentInput.getComment();
+                    issue.getComment().add(comment);
+                    issueService.updateIssue(issue.getId(), issue);
+                } else if (choice == 2) {
+                    Comment comment = CommentInput.selectComment(issue.getComment());
+                    issue.getComment().remove(comment);
+                    issueService.updateIssue(issue.getId(), issue);
+                } else {
+                    return;
+                }
+            }
+        }
+    }
+
     public static void issueDetails(Issue issue) {
         System.out.println(issue);
         List<Integer> choices = List.of(1, 2, 3);
         while (true) {
-            int choice = getInt("1. Update 2. Remove 3. Back\nSelect Option:");
+            int choice = getInt("1. Update 2. Remove 3. Comments 4. Change Status 5. Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     updateIssue(issue);
                 } else if (choice == 2) {
                     removeIssue(issue);
+                } else if (choice == 3) {
+                    displayComments(issue);
+                } else if (choice == 4) {
+                    System.out.println("Old status");
+                    IssueStatus status = getIssueStatus();
+                    issue.setIssueStatus(status);
+                    issueService.updateIssue(issue.getId(), issue);
                 } else {
                     return;
                 }

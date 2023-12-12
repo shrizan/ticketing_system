@@ -3,6 +3,7 @@ package com.lambton;
 import com.lambton.common.AppConstant;
 import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
+import com.lambton.model.comment.Comment;
 import com.lambton.model.project.NewProject;
 import com.lambton.model.project.EnhancementProject;
 import com.lambton.model.project.Project;
@@ -15,6 +16,20 @@ import java.util.Optional;
 public class ProjectInput extends InputUtility {
 
     public static ProjectService projectService = new ProjectService();
+
+    public static ProjectStatus getStatus() {
+        List<Integer> choices = List.of(1, 2);
+        while (true) {
+            int choice = getInt("1.In Progress 2.Completed");
+            if (choices.contains(choice)) {
+                if (choice == 1) return ProjectStatus.IN_PROGRESS;
+                else return ProjectStatus.COMPLETED;
+            } else {
+                System.out.println("Invalid input!!!");
+            }
+        }
+
+    }
 
     public static Project getProjectUserInput() {
         String title = getString("Title:");
@@ -124,11 +139,32 @@ public class ProjectInput extends InputUtility {
         }
     }
 
+    static void displayComments(Project project) {
+        CommentInput.displayComments(project.getComments());
+        List<Integer> choices = List.of(1, 2, 3);
+        while (true) {
+            int choice = getInt("1. Add 2. Remove 3. Go Back");
+            if (choices.contains(choice)) {
+                if (choice == 1) {
+                    Comment comment = CommentInput.getComment();
+                    project.getComments().add(comment);
+                    projectService.updateProject(project.getId(), project);
+                } else if (choice == 2) {
+                    Comment comment = CommentInput.selectComment(project.getComments());
+                    project.getComments().remove(comment);
+                    projectService.updateProject(project.getId(), project);
+                } else {
+                    return;
+                }
+            }
+        }
+    }
+
     static void displayDetails(Project project) {
-        List<Integer> choices = List.of(1, 2, 3, 4, 5);
+        List<Integer> choices = List.of(1, 2, 3, 4, 5, 6);
         while (true) {
             System.out.println(project);
-            int choice = getInt("1. ⬆️Update \t2. ⛔Delete \t3.➕ Add team member \t4: ➖ Remove Team member \t5. ⬅️Back\nSelect Option:");
+            int choice = getInt("1. ⬆️Update \t2. ⛔Delete \t3.➕ Add team member \t4: ➖ Remove Team member\t5.Comments\t6.Update Status \t7. ⬅️Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     update(project);
@@ -138,6 +174,12 @@ public class ProjectInput extends InputUtility {
                     addTeamMember(project);
                 } else if (choice == 4) {
                     removeTeamMember(project);
+                } else if (choice == 5) {
+                    displayComments(project);
+                } else if (choice == 6) {
+                    ProjectStatus status = getStatus();
+                    project.setProjectStatus(status);
+                    projectService.updateProject(project.getId(), project);
                 }
                 return;
             }
