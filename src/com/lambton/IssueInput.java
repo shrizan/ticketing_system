@@ -1,6 +1,7 @@
 package com.lambton;
 
 import com.lambton.common.AppConstant;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
@@ -21,6 +22,22 @@ import java.util.Optional;
 
 public class IssueInput extends InputUtility {
     static IssueService issueService = new IssueService();
+
+    private static void printHeader() {
+        System.out.println(
+                AppUtil.formatString(
+                        "SN",
+                        "Title",
+                        "Description",
+                        "Project",
+                        "Parent Issue",
+                        "Assigned By",
+                        "Type",
+                        "Priority",
+                        "Status"
+                )
+        );
+    }
 
     private static IssueType getIssueType(int choice) {
         switch (choice) {
@@ -223,14 +240,6 @@ public class IssueInput extends InputUtility {
         System.out.println("New Issue Created!!!");
     }
 
-    static void displayList(List<Issue> issues) {
-        System.out.println("SN \t\t | Title | \t\t | Description |");
-        for (int i = 0; i < issues.size(); i++) {
-            Issue issue = issues.get(i);
-            System.out.printf("%d \t\t | %s | \t\t | %s |\n", i + 1, issue.getTitle(), issue.getDescription());
-        }
-    }
-
     static void updateIssue(Issue issue) {
         String input = getString("Do you want to update the project(Y/N):");
         String title = getString(String.format("Title(%s):", issue.getTitle()));
@@ -333,10 +342,10 @@ public class IssueInput extends InputUtility {
     }
 
     static void displayIssues(List<Issue> issues) {
-        System.out.println("SN \t\t | Title | \t\t | Description |");
+        printHeader();
         for (int i = 0; i < issues.size(); i++) {
             Issue issue = issues.get(i);
-            System.out.printf("%d \t\t | %s | \t\t | %s |\n", i + 1, issue.getTitle(), issue.getDescription());
+            System.out.printf("%s%s%n", getSN(Integer.toString(i + 1)), issue);
         }
     }
 

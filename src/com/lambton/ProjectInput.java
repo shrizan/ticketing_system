@@ -1,6 +1,7 @@
 package com.lambton;
 
 import com.lambton.common.AppConstant;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
 import com.lambton.model.comment.Comment;
@@ -10,12 +11,26 @@ import com.lambton.model.project.Project;
 import com.lambton.model.user.User;
 import com.lambton.service.ProjectService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public class ProjectInput extends InputUtility {
 
     public static ProjectService projectService = new ProjectService();
+
+    static void printHeader() {
+        System.out.println(AppUtil.formatString(
+                30,
+                "SN",
+                "Title",
+                "Description",
+                "Project Status",
+                "Start Date",
+                "End Date"
+        ));
+    }
 
     public static ProjectStatus getStatus() {
         List<Integer> choices = List.of(1, 2);
@@ -41,7 +56,13 @@ public class ProjectInput extends InputUtility {
         if (choice == 1) {
             return new NewProject(title, description, ProjectStatus.IN_PROGRESS);
         } else {
-            return new EnhancementProject(title, description, ProjectStatus.IN_PROGRESS);
+            System.out.println("Link to the project:");
+            List<Project> projects = projectService.search(
+                    AppConstant.DEFAULT_PAGE,
+                    AppConstant.DEFAULT_SIZE, Optional.empty(),
+                    Optional.empty());
+            Project project = ProjectInput.displayProjectsForSelect(projects);
+            return new EnhancementProject(title, description, ProjectStatus.IN_PROGRESS, project);
         }
     }
 
@@ -49,7 +70,7 @@ public class ProjectInput extends InputUtility {
         while (true) {
             displayProjectsList(projects);
 
-            int choice = getInt("1.Choose\t2.Filter\t3.Back\nSelect Option:");
+            int choice = getInt("1.Choose\t2.Filter\t3.Back(Skip)\nSelect Option:");
             if (choice == 1) {
                 return selectProject(projects);
 
@@ -62,10 +83,10 @@ public class ProjectInput extends InputUtility {
     }
 
     static void displayProjectsList(List<Project> projects) {
-        System.out.println("SN\t\tTitle\t\tDescription");
+        printHeader();
         for (int i = 0; i < projects.size(); i++) {
             Project project = projects.get(i);
-            System.out.printf("%d\t\t%s\t\t%s\n", i + 1, project.getTitle(), project.getDescription());
+            System.out.printf("%s%s%n", getSN(Integer.toString(i + 1), 30), project);
         }
     }
 
@@ -163,7 +184,8 @@ public class ProjectInput extends InputUtility {
     static void displayDetails(Project project) {
         List<Integer> choices = List.of(1, 2, 3, 4, 5, 6);
         while (true) {
-            System.out.println(project);
+            printHeader();
+            System.out.printf("%s%s%n", getSN(Integer.toString(1), 30), project);
             int choice = getInt("1.Update \t2.Delete \t3.Add team member \t4.Remove Team member\t5.Comments\t6.Update Status \t7.Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
@@ -239,7 +261,9 @@ public class ProjectInput extends InputUtility {
             System.out.println("3.Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
             if (choice == 1) {
-                projectService.create(getProjectUserInput());
+                Project project = getProjectUserInput();
+                project.setStartDate(LocalDate.now());
+                projectService.create(project);
             } else if (choice == 2) {
                 List<Project> projects = projectService.search(
                         AppConstant.DEFAULT_PAGE,

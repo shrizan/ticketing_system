@@ -18,9 +18,17 @@ public class Project extends BaseModel {
     private ProjectStatus projectStatus;
     private LocalDate startDate = LocalDate.now();
     private LocalDate endDate;
+    private Project parent;
     private List<User> team = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
 
+    public Project(String title, String description, ProjectType projectType, ProjectStatus projectStatus, Project parent) {
+        this.title = title;
+        this.description = description;
+        this.projectType = projectType;
+        this.projectStatus = projectStatus;
+        this.parent = parent;
+    }
     public Project(String title, String description, ProjectType projectType, ProjectStatus projectStatus) {
         this.title = title;
         this.description = description;
@@ -60,6 +68,14 @@ public class Project extends BaseModel {
         this.projectStatus = projectStatus;
     }
 
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
     @Override
     public String toString() {
         return AppUtil.formatString(
@@ -67,8 +83,8 @@ public class Project extends BaseModel {
                 title,
                 description,
                 projectStatus.toString(),
-                startDate.toString(),
-                endDate.toString()
+                null == startDate ? "" : startDate.toString(),
+                null == endDate ? "" : endDate.toString()
         );
     }
 }

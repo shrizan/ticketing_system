@@ -1,6 +1,7 @@
 package com.lambton.model.issue;
 
 import com.lambton.common.model.BaseModel;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
@@ -80,5 +81,19 @@ public class Issue extends BaseModel {
 
     public void setIssueStatus(IssueStatus issueStatus) {
         this.issueStatus = issueStatus;
+    }
+
+    @Override
+    public String toString() {
+        return AppUtil.formatString(
+                title,
+                description,
+                project.getTitle(),
+                null == parent ? "" : parent.title,
+                assignedBy.getFullName(),
+                issueType.toString(),
+                priority.toString(),
+                issueStatus.toString()
+        );
     }
 }

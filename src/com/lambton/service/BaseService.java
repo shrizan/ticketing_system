@@ -19,7 +19,9 @@ public abstract class BaseService<T extends BaseModel, S extends Store<T>> {
             System.out.println("User not authorized!!!");
             return null;
         }
-        return store.createEntity(entity);
+        T createdEntity = store.createEntity(entity);
+        if (null != createdEntity) System.out.println("Created successfully!!!");
+        return createdEntity;
     }
 
     public void update(String entityId, T entity) {
