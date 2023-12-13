@@ -47,4 +47,8 @@ public class UserService extends BaseService<User, UserStore<User>> {
     public List<User> search(long page, long size, Optional<String> firstName, Optional<String> lastName, Optional<UserType> userType) {
         return store.search(page, size, firstName, lastName, userType);
     }
+
+    public Optional<User> getUserByUsername(String username) {
+        return store.findByUsername(username);
+    }
 }

@@ -23,6 +23,11 @@ public class UserStoreImpl<T extends User> extends StoreImpl<T> implements UserS
     }
 
     @Override
+    public Optional<T> findByUsername(String username) {
+        return allEntities().values().stream().filter(user->user.getUsername().equals(username)).findAny();
+    }
+
+    @Override
     public List<User> search(
             long page,
             long size,

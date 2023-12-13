@@ -16,9 +16,9 @@ public class Main {
 
     static void mainMenu() {
         System.out.println("\nMain Menu:");
-        System.out.println("1.👲🏻 Users");
-        System.out.println("2.📊 Projects");
-        System.out.println("3.🐞 Issues");
+        System.out.println("1.Users");
+        System.out.println("2.Projects");
+        System.out.println("3.Issues");
         int choice = ProjectInput.getInt("Enter your choice:");
         if (choice == 1) {
             UserInput.userMenu();

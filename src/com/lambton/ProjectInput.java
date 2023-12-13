@@ -36,7 +36,7 @@ public class ProjectInput extends InputUtility {
         String description = getString("Description:");
         int choice = 0;
         while (!(choice == 1 || choice == 2)) {
-            choice = getInt("1. New Project \t 2. Enhancement Project\nSelect Option:");
+            choice = getInt("1.New Project \t 2.Enhancement Project\nSelect Option:");
         }
         if (choice == 1) {
             return new NewProject(title, description, ProjectStatus.IN_PROGRESS);
@@ -49,7 +49,7 @@ public class ProjectInput extends InputUtility {
         while (true) {
             displayProjectsList(projects);
 
-            int choice = getInt("1. ℹ️Choose\t2. 🔍Filter\t3. ⬅️Back\nSelect Option:");
+            int choice = getInt("1.Choose\t2.Filter\t3.Back\nSelect Option:");
             if (choice == 1) {
                 return selectProject(projects);
 
@@ -164,7 +164,7 @@ public class ProjectInput extends InputUtility {
         List<Integer> choices = List.of(1, 2, 3, 4, 5, 6);
         while (true) {
             System.out.println(project);
-            int choice = getInt("1. ⬆️Update \t2. ⛔Delete \t3.➕ Add team member \t4: ➖ Remove Team member\t5.Comments\t6.Update Status \t7. ⬅️Back\nSelect Option:");
+            int choice = getInt("1.Update \t2.Delete \t3.Add team member \t4.Remove Team member\t5.Comments\t6.Update Status \t7.Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     update(project);
@@ -189,7 +189,7 @@ public class ProjectInput extends InputUtility {
     static void displayProjects(List<Project> projects) {
         while (true) {
             displayProjectsList(projects);
-            int choice = getInt("1. ℹ️Details\t2. 🔍Filter\t3. ⬅️Back\nSelect Option:");
+            int choice = getInt("1.Details\t2.Filter\t3.Back\nSelect Option:");
             if (choice == 1) {
                 Project project = selectProject(projects);
                 displayDetails(project);
@@ -234,9 +234,9 @@ public class ProjectInput extends InputUtility {
     static void projectMenu() {
         while (true) {
             System.out.println("\nProject Menu:");
-            System.out.println("1.➕ Create");
-            System.out.println("2.ℹ️ View(Update and Remove)");
-            System.out.println("3.⬅️ Main menu");
+            System.out.println("1.Create");
+            System.out.println("2.View(Update and Remove)");
+            System.out.println("3.Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
             if (choice == 1) {
                 projectService.create(getProjectUserInput());

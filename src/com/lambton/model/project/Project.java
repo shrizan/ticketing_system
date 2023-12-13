@@ -1,6 +1,7 @@
 package com.lambton.model.project;
 
 import com.lambton.common.model.*;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
 import com.lambton.model.comment.Comment;
@@ -57,5 +58,17 @@ public class Project extends BaseModel {
 
     public void setProjectStatus(ProjectStatus projectStatus) {
         this.projectStatus = projectStatus;
+    }
+
+    @Override
+    public String toString() {
+        return AppUtil.formatString(
+                30,
+                title,
+                description,
+                projectStatus.toString(),
+                startDate.toString(),
+                endDate.toString()
+        );
     }
 }

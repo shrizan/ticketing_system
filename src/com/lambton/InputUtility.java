@@ -1,6 +1,8 @@
 package com.lambton;
 
 
+import com.lambton.common.util.AppUtil;
+
 import java.util.Scanner;
 
 abstract public class InputUtility {
@@ -51,4 +53,10 @@ abstract public class InputUtility {
         }
     }
 
+    static String getSN(String str, int... size) {
+        if (size.length > 0) {
+            return AppUtil.formatString(size[0], str);
+        }
+        return AppUtil.formatString(str);
+    }
 }

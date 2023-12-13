@@ -2,6 +2,7 @@ package com.lambton;
 
 import com.lambton.common.AppConstant;
 import com.lambton.common.model.BaseModel;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.user.UserType;
 import com.lambton.model.user.Dev;
 import com.lambton.model.user.Manager;
@@ -18,22 +19,8 @@ import java.util.stream.Collectors;
 public class UserInput extends InputUtility {
     public static final UserService userService = new UserService();
 
-    static void addUsersToSuggestionList(List<User> suggestedUser) {
-        String firstName = getString("First name:");
-        String lastName = getString("Last name:");
-        UserType userType = getUserType();
-        List<User> users = userService.search(0, 10, Optional.of(firstName), Optional.of(lastName), Optional.of(userType));
-        List<User> updatedUsers = users.stream().filter(user -> !suggestedUser.stream().map(BaseModel::getId).collect(Collectors.toList()).contains(user.getId()))
-                .collect(Collectors.toList());
-        displayUserList(updatedUsers);
-        while (true) {
-            int choice = getInt("Select SN(Enter zero to done):");
-            if (choice == 0) break;
-            if (choice < 1 || choice > updatedUsers.size()) {
-                System.out.println("Invalid selection");
-            }
-            suggestedUser.add(updatedUsers.get(choice - 1));
-        }
+    private static void printHeader() {
+        System.out.println(AppUtil.formatString(30, "SN", "Full Name", "Username", "User Type"));
     }
 
     static UserType getUserType(UserType... userTypes) {
@@ -63,7 +50,15 @@ public class UserInput extends InputUtility {
         UserType userType = getUserType();
         String firstName = getString("First name:");
         String lastName = getString("Last name:");
-        String username = getString("Username:");
+        String username;
+        while (true) {
+            username = getString("Username:");
+            if (userService.getUserByUsername(username).isPresent()) {
+                System.out.println("Username already exist!!!");
+            } else {
+                break;
+            }
+        }
         String password = getString("Password:");
         if (userType == UserType.MANAGER) {
             return new Manager(firstName, lastName, username, password);
@@ -97,30 +92,32 @@ public class UserInput extends InputUtility {
 
     static void displayUserList(List<User> users) {
         System.out.println();
-        System.out.println("SN\tFirst Name\tLast Name\tUsername");
+        printHeader();
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
-            System.out.printf("%d\t%s\t%s\t%s\n", i + 1, user.getFirstName(), user.getLastName(), user.getUsername());
+            System.out.printf("%s%s%n", getSN(Integer.toString(i + 1), 30), user);
         }
     }
 
     static User selectUser(List<User> users) {
-        int choice = getInt("Select from SN:");
         while (true) {
+            int choice = getInt("Select from SN:");
             if (choice < 1 || choice > users.size()) {
                 System.out.println("Invalid selection!!!");
             } else {
-                break;
+                return users.get(choice - 1);
             }
         }
-        return users.get(choice - 1);
     }
 
     static void displayDetails(User user) {
         List<Integer> choices = List.of(1, 2, 3);
         while (true) {
-            System.out.println(user);
-            int choice = getInt("1. ⬆️Update \t2. ⛔Remove \t3. ⬅️Back\nSelect Option:");
+            System.out.println();
+            printHeader();
+            System.out.printf("%s%s%n", getSN(Integer.toString(1), 30), user);
+            System.out.println();
+            int choice = getInt("1.Update \t2.Remove \t3.Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     updateUser(user);
@@ -136,7 +133,7 @@ public class UserInput extends InputUtility {
         while (true) {
             displayUserList(users);
 
-            int choice = getInt("1. ⛔Remove \t2. ⬅️Back\nSelect Option:");
+            int choice = getInt("1.Remove \t2.Back\nSelect Option:");
             if (choice == 1) {
                 return selectUser(users);
 
@@ -148,7 +145,7 @@ public class UserInput extends InputUtility {
         while (true) {
             displayUserList(users);
 
-            int choice = getInt("1. ℹ️Choose\t2. 🔍Filter\t3. ⬅️Back\nSelect Option:");
+            int choice = getInt("1.Choose\t2.Filter\t3.Back\nSelect Option:");
             if (choice == 1) {
                 return selectUser(users);
 
@@ -164,10 +161,14 @@ public class UserInput extends InputUtility {
         while (true) {
             displayUserList(users);
 
-            int choice = getInt("1. ℹ️Details\t2. 🔍Filter\t3. ⬅️Back\nSelect Option:");
+            int choice = getInt("1.Details\t2.Filter\t3.Back\nSelect Option:");
             if (choice == 1) {
-                User user = selectUser(users);
-                displayDetails(user);
+                if (!users.isEmpty()) {
+                    User user = selectUser(users);
+                    displayDetails(user);
+                } else {
+                    System.out.println("No users to select!!!");
+                }
             } else if (choice == 2) {
                 searchUser();
             } else if (choice == 3) {
@@ -212,10 +213,10 @@ public class UserInput extends InputUtility {
 
     static void userMenu() {
         while (true) {
-            System.out.println("\nProject Menu:");
-            System.out.println("1.➕ Create");
-            System.out.println("2.ℹ️ View(Update and Remove)");
-            System.out.println("3.⬅️ Main menu");
+            System.out.println("\nUser Menu:");
+            System.out.println("1.Create");
+            System.out.println("2.View(Update and Remove)");
+            System.out.println("3.Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
             if (choice == 1) {
                 userService.create(getUserInput());
