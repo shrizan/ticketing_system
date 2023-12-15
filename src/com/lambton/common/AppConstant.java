@@ -8,24 +8,14 @@ import java.util.List;
 
 public class AppConstant {
     public static final String PROJECT_PREFIX = "ticketing_system";
-    public static final String GENERAL_PROJECT_STORE_FILE = "general_project_file";
-    public static final String ENHANCE_PROJECT_STORE_FILE = "enhancement_project_file";
-    public static final String MANAGER_USER_STORE_FILE = "manager_user_file";
-    public static final String DEV_USER_STORE_FILE = "dev_user_file";
-    public static final String QA_USER_STORE_FILE = "qa_user_file";
-    public static final String STORY_ISSUE_FILE = "story_issue_file";
-    public static final String TASK_ISSUE_FILE = "task_issue_file";
-    public static final String BUG_ISSUE_FILE = "bug_issue_file";
+    public static final String PROJECT_STORE_FILE = "project_file";
+    public static final String USER_STORE_FILE = "user_file";
+    public static final String ISSUE_FILE = "issue_file";
 
     public static final List<String> FILES = List.of(
-            GENERAL_PROJECT_STORE_FILE,
-            ENHANCE_PROJECT_STORE_FILE,
-            MANAGER_USER_STORE_FILE,
-            DEV_USER_STORE_FILE,
-            QA_USER_STORE_FILE,
-            STORY_ISSUE_FILE,
-            TASK_ISSUE_FILE,
-            BUG_ISSUE_FILE
+            PROJECT_STORE_FILE,
+            USER_STORE_FILE,
+            ISSUE_FILE
     );
 
     public static void initFiles() {

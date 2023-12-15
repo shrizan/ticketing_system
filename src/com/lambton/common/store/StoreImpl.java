@@ -35,7 +35,8 @@ public abstract class StoreImpl<T extends BaseModel> implements Store<T> {
         var oldEntity = getEntity(entityId);
         if (null == oldEntity || !entityId.equals(entity.getId())) throw new EntityNotFoundException();
         var allEntities = fileUtility.readAllEntities();
-        allEntities.put(entityId, entity);
+        allEntities.remove(entityId);
+        allEntities.put(entity.getId(), entity);
         return entity;
     }
 

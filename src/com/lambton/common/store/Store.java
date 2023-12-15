@@ -2,6 +2,9 @@ package com.lambton.common.store;
 
 import com.lambton.common.model.*;
 
+import java.util.List;
+import java.util.Map;
+
 public interface Store<T extends BaseModel> {
     T createEntity(T entity);
 
@@ -10,4 +13,6 @@ public interface Store<T extends BaseModel> {
     T deleteEntity(String entityId);
 
     T getEntity(String entityId);
+
+    Map<String,T> allEntities();
 }

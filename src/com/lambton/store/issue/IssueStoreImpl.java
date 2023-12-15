@@ -9,9 +9,14 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements IssueStore<T> {
+public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements IssueStore<T> {
     public IssueStoreImpl(FileUtility<T> fileUtility) {
         super(fileUtility);
+    }
+
+    @Override
+    public Map<String, T> allEntities() {
+        return null;
     }
 
     public Stream<T> searchStream(
@@ -34,14 +39,29 @@ abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> imple
                 .filter(filterByIssueStatus(optionalIssueStatus));
     }
 
-    public abstract List<T> search(
+    @Override
+    public List<T> search(
             long page,
             long size,
             Optional<String> optionalTitle,
             Optional<String> optionalAssigneeId,
             Optional<Priority> optionalPriority,
-            Optional<IssueStatus> optionalIssueStatus
-    );
+            Optional<IssueStatus> optionalIssueStatus,
+            Optional<IssueType> issueType
+    ) {
+        return fileUtility
+                .readAllEntities()
+                .values()
+                .stream()
+                .skip(page * size)
+                .limit(size)
+                .filter(filterByTitle(optionalTitle))
+                .filter(filterByAssigneeId(optionalAssigneeId))
+                .filter(filterByPriority(optionalPriority))
+                .filter(filterByIssueStatus(optionalIssueStatus))
+                .filter(filterByIssueType(issueType))
+                .collect(Collectors.toList());
+    }
 
     private static <T extends Issue> Predicate<T> filterByIssueStatus(Optional<IssueStatus> optionalIssueStatus) {
         return issue -> optionalIssueStatus.map(issueStatus -> issue.getIssueStatus().equals(issueStatus)).orElse(true);
@@ -52,10 +72,14 @@ abstract public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> imple
     }
 
     private static <T extends Issue> Predicate<T> filterByAssigneeId(Optional<String> optionalAssigneeId) {
-        return issue -> optionalAssigneeId.map(assignedId -> issue.getAssignee().getId().equals(assignedId)).orElse(true);
+        return issue -> optionalAssigneeId.map(assignedId -> issue.getAssignedBy().getId().equals(assignedId)).orElse(true);
     }
 
     private static <T extends Issue> Predicate<T> filterByTitle(Optional<String> optionalTitle) {
         return issue -> optionalTitle.map(title -> issue.getTitle().toLowerCase().contains(title.toLowerCase())).orElse(true);
+    }
+
+    private static <T extends Issue> Predicate<T> filterByIssueType(Optional<IssueType> optionalIssueType) {
+        return issue -> optionalIssueType.map(issueType -> issue.getIssueType().equals(issueType)).orElse(true);
     }
 }
