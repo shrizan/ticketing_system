@@ -34,14 +34,11 @@ public class UserService {
         }
     }
 
-    public List<User> search(int page, int size, Optional<String> firstName, Optional<String> lastName, UserType userType) {
-        return userStore.search(page, size, firstName, lastName);
+    public List<User> search(long page, long size, Optional<String> firstName, Optional<String> lastName, Optional<UserType> userType) {
+        return userStore.search(page, size, firstName, lastName, userType);
     }
 
-    public void updateUser(UserType oldUserType, User user) {
-        if (oldUserType != user.getUserType()) {
-            userStore.deleteEntity(user.getId());
-        }
+    public void updateUser(User user) {
         userStore.updateEntity(user.getId(), user);
         System.out.println("Updated!!!");
     }

@@ -1,6 +1,5 @@
 package com.lambton;
 
-import com.lambton.service.ProjectService;
 
 import java.util.Scanner;
 
@@ -24,6 +23,17 @@ abstract public class InputUtility {
             System.out.print(message);
             try {
                 return Integer.parseInt(scanner.nextLine());
+            } catch (Exception ex) {
+                System.out.println("Invalid input!!!");
+            }
+        }
+    }
+
+    public static long getLong(String message) {
+        while (true) {
+            System.out.print(message);
+            try {
+                return Long.parseLong(scanner.nextLine());
             } catch (Exception ex) {
                 System.out.println("Invalid input!!!");
             }

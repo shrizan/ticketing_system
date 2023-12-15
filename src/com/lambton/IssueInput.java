@@ -54,7 +54,7 @@ public class IssueInput extends InputUtility {
         while (true) {
             String projectTitle = getString("Project Title:");
             List<Project> projects = ProjectInput.projectService.search(0, 10, Optional.of(projectTitle), Optional.of(ProjectType.ENHANCEMENT));
-            ProjectInput.searchProject(projects);
+            ProjectInput.displayProjects(projects);
             String input = getString("S for search again. Or enter index for project to select");
             Project project = null;
             if (input.equalsIgnoreCase("s")) {

@@ -1,6 +1,7 @@
 package com.lambton.store.user;
 
 import com.lambton.common.store.*;
+import com.lambton.enums.user.UserType;
 import com.lambton.model.user.User;
 import com.lambton.utility.FileUtility;
 
@@ -26,7 +27,8 @@ public class UserStoreImpl<T extends User> extends StoreImpl<T> implements UserS
             long page,
             long size,
             Optional<String> optionalFirstName,
-            Optional<String> optionalLastName
+            Optional<String> optionalLastName,
+            Optional<UserType> userType
     ) {
         return fileUtility
                 .readAllEntities()
@@ -45,5 +47,9 @@ public class UserStoreImpl<T extends User> extends StoreImpl<T> implements UserS
 
     private static <T extends User> Predicate<T> filterByFirstName(Optional<String> optionalFirstName) {
         return user -> optionalFirstName.map(firstName -> user.getFirstName().toLowerCase().contains(firstName.toLowerCase())).orElse(true);
+    }
+
+    private static <T extends User> Predicate<T> filterByUserType(Optional<UserType> optionalUserType) {
+        return user -> optionalUserType.map(userType -> user.getUserType().equals(userType)).orElse(true);
     }
 }
