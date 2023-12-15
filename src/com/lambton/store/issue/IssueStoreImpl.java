@@ -40,8 +40,27 @@ public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements Iss
     }
 
     @Override
-    public List<T> search(long page, long size, Optional<String> optionalTitle, Optional<String> optionalAssigneeId, Optional<Priority> optionalPriority, Optional<IssueStatus> optionalIssueStatus, Optional<IssueType> issueType) {
-        return null;
+    public List<T> search(
+            long page,
+            long size,
+            Optional<String> optionalTitle,
+            Optional<String> optionalAssigneeId,
+            Optional<Priority> optionalPriority,
+            Optional<IssueStatus> optionalIssueStatus,
+            Optional<IssueType> issueType
+    ) {
+        return fileUtility
+                .readAllEntities()
+                .values()
+                .stream()
+                .skip(page * size)
+                .limit(size)
+                .filter(filterByTitle(optionalTitle))
+                .filter(filterByAssigneeId(optionalAssigneeId))
+                .filter(filterByPriority(optionalPriority))
+                .filter(filterByIssueStatus(optionalIssueStatus))
+                .filter(filterByIssueType(issueType))
+                .collect(Collectors.toList());
     }
 
     private static <T extends Issue> Predicate<T> filterByIssueStatus(Optional<IssueStatus> optionalIssueStatus) {
@@ -58,5 +77,9 @@ public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements Iss
 
     private static <T extends Issue> Predicate<T> filterByTitle(Optional<String> optionalTitle) {
         return issue -> optionalTitle.map(title -> issue.getTitle().toLowerCase().contains(title.toLowerCase())).orElse(true);
+    }
+
+    private static <T extends Issue> Predicate<T> filterByIssueType(Optional<IssueType> optionalIssueType) {
+        return issue -> optionalIssueType.map(issueType -> issue.getIssueType().equals(issueType)).orElse(true);
     }
 }
