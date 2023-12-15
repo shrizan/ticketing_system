@@ -136,7 +136,8 @@ public class UserInput extends InputUtility {
             int choice = getInt("1.Remove \t2.Back\nSelect Option:");
             if (choice == 1) {
                 return selectUser(users);
-
+            } else if (choice == 2) {
+                return null;
             }
         }
     }

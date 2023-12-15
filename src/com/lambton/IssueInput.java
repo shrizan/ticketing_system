@@ -297,10 +297,10 @@ public class IssueInput extends InputUtility {
     }
 
     static void displayComments(Issue issue) {
-        CommentInput.displayComments(issue.getComment());
         List<Integer> choices = List.of(1, 2, 3);
         while (true) {
-            int choice = getInt("1. Add 2. Remove 3. Go Back");
+            CommentInput.displayComments(issue.getComment());
+            int choice = getInt("1. Add 2. Remove 3. Go Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     Comment comment = CommentInput.getComment();

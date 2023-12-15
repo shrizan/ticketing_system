@@ -10,6 +10,7 @@ import com.lambton.model.user.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Project extends BaseModel {
     private String title;
@@ -29,6 +30,7 @@ public class Project extends BaseModel {
         this.projectStatus = projectStatus;
         this.parent = parent;
     }
+
     public Project(String title, String description, ProjectType projectType, ProjectStatus projectStatus) {
         this.title = title;
         this.description = description;
@@ -82,6 +84,7 @@ public class Project extends BaseModel {
                 30,
                 title,
                 description,
+                null == team ? "" : team.stream().map(User::getFirstName).collect(Collectors.joining(",")),
                 projectStatus.toString(),
                 null == startDate ? "" : startDate.toString(),
                 null == endDate ? "" : endDate.toString()

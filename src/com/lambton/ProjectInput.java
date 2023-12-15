@@ -26,6 +26,7 @@ public class ProjectInput extends InputUtility {
                 "SN",
                 "Title",
                 "Description",
+                "Members",
                 "Project Status",
                 "Start Date",
                 "End Date"
@@ -35,7 +36,7 @@ public class ProjectInput extends InputUtility {
     public static ProjectStatus getStatus() {
         List<Integer> choices = List.of(1, 2);
         while (true) {
-            int choice = getInt("1.In Progress 2.Completed");
+            int choice = getInt("1.In Progress 2.Completed\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) return ProjectStatus.IN_PROGRESS;
                 else return ProjectStatus.COMPLETED;
@@ -91,15 +92,14 @@ public class ProjectInput extends InputUtility {
     }
 
     static Project selectProject(List<Project> projects) {
-        int choice = getInt("Select from SN:");
         while (true) {
+            int choice = getInt("Select from SN:");
             if (choice < 1 || choice > projects.size()) {
                 System.out.println("Invalid selection!!!");
             } else {
-                break;
+                return projects.get(choice - 1);
             }
         }
-        return projects.get(choice - 1);
     }
 
     static void update(Project project) {
@@ -120,17 +120,10 @@ public class ProjectInput extends InputUtility {
     }
 
     static void removeTeamMember(Project project) {
-        List<User> users = UserInput.userService.search(
-                AppConstant.DEFAULT_PAGE,
-                AppConstant.DEFAULT_SIZE,
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty()
-        );
-        User user = UserInput.fixedUserList(users);
+        User user = UserInput.fixedUserList(project.getTeam());
         if (null == user) {
             System.out.println("None selected!!!");
-        } else if (!project.getTeam().contains(user)) {
+        } else if (project.getTeam().stream().noneMatch(teamMember -> teamMember.getId().equals(user.getId()))) {
             System.out.println("Team member does not exist!!!");
         } else {
             project.getTeam().remove(user);
@@ -150,8 +143,7 @@ public class ProjectInput extends InputUtility {
         User user = UserInput.displayUserForSelect(users);
         if (null == user) {
             System.out.println("None selected!!!");
-            return;
-        } else if (project.getTeam().contains(user)) {
+        } else if (project.getTeam().stream().anyMatch(teamUser -> teamUser.getId().equals(user.getId()))) {
             System.out.println("User is already in the team");
         } else {
             project.getTeam().add(user);
@@ -161,10 +153,10 @@ public class ProjectInput extends InputUtility {
     }
 
     static void displayComments(Project project) {
-        CommentInput.displayComments(project.getComments());
         List<Integer> choices = List.of(1, 2, 3);
         while (true) {
-            int choice = getInt("1. Add 2. Remove 3. Go Back");
+            CommentInput.displayComments(project.getComments());
+            int choice = getInt("1. Add 2. Remove 3. Go Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     Comment comment = CommentInput.getComment();
@@ -202,8 +194,9 @@ public class ProjectInput extends InputUtility {
                     ProjectStatus status = getStatus();
                     project.setProjectStatus(status);
                     projectService.update(project.getId(), project);
+                } else if (choice == 7) {
+                    break;
                 }
-                return;
             }
         }
     }
