@@ -3,6 +3,7 @@ package com.lambton.model.project;
 import com.lambton.common.model.*;
 import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
+import com.lambton.model.comment.Comment;
 import com.lambton.model.user.User;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class Project extends BaseModel {
     private LocalDate startDate = LocalDate.now();
     private LocalDate endDate;
     private List<User> team = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public Project(String title, String description, ProjectType projectType, ProjectStatus projectStatus) {
         this.title = title;
@@ -47,5 +49,13 @@ public class Project extends BaseModel {
 
     public List<User> getTeam() {
         return team;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setProjectStatus(ProjectStatus projectStatus) {
+        this.projectStatus = projectStatus;
     }
 }
