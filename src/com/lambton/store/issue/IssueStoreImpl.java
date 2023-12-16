@@ -1,13 +1,18 @@
 package com.lambton.store.issue;
 
-import com.lambton.common.store.*;
-import com.lambton.enums.issue.*;
-import com.lambton.model.issue.*;
-import com.lambton.utility.*;
+import com.lambton.common.store.StoreImpl;
+import com.lambton.enums.issue.IssueStatus;
+import com.lambton.enums.issue.IssueType;
+import com.lambton.enums.issue.Priority;
+import com.lambton.model.issue.Issue;
+import com.lambton.utility.FileUtility;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements IssueStore<T> {
     public IssueStoreImpl(FileUtility<T> fileUtility) {

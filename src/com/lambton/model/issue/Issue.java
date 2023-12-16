@@ -4,6 +4,7 @@ import com.lambton.common.model.BaseModel;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
+import com.lambton.model.comment.Comment;
 import com.lambton.model.project.Project;
 import com.lambton.model.user.User;
 
@@ -20,6 +21,8 @@ public class Issue extends BaseModel {
     private IssueType issueType;
     private Priority priority;
     private IssueStatus issueStatus;
+
+    private List<Comment> comment = new ArrayList<>();
 
     public Issue(String title, String description, Project project, User assignedBy, IssueType issueType, Priority priority, IssueStatus issueStatus) {
         this.title = title;
@@ -65,5 +68,17 @@ public class Issue extends BaseModel {
 
     public Project getProject() {
         return project;
+    }
+
+    public List<Comment> getComment() {
+        return comment;
+    }
+
+    public void setIssueType(IssueType issueType) {
+        this.issueType = issueType;
+    }
+
+    public void setIssueStatus(IssueStatus issueStatus) {
+        this.issueStatus = issueStatus;
     }
 }
