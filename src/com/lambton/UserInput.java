@@ -9,6 +9,7 @@ import com.lambton.model.user.Manager;
 import com.lambton.model.user.QualityAssurance;
 import com.lambton.model.user.User;
 import com.lambton.service.UserService;
+import com.lambton.utility.AccountUtility;
 
 import java.util.HashMap;
 import java.util.List;
@@ -151,7 +152,8 @@ public class UserInput extends InputUtility {
                 return selectUser(users);
 
             } else if (choice == 2) {
-                searchUser();
+                List<User> searchedUser = searchUser();
+                return displayUserForSelect(searchedUser);
             } else if (choice == 3) {
                 return null;
             }
@@ -171,15 +173,16 @@ public class UserInput extends InputUtility {
                     System.out.println("No users to select!!!");
                 }
             } else if (choice == 2) {
-                searchUser();
+                List<User> searchedUser = searchUser();
+                displayUserList(searchedUser);
             } else if (choice == 3) {
                 return;
             }
         }
     }
 
-    static void searchUser() {
-        long page = getLong("Page number:");
+    static List<User> searchUser() {
+        long page = getLong("Page number(start from 1):");
         long size = getLong("Page size:");
         String firstName = getString("First name (Press enter for empty):");
         String lastName = getString("Last name (Press enter for empty):");
@@ -191,15 +194,15 @@ public class UserInput extends InputUtility {
         Optional<UserType> enteredUserType = userTypes.getOrDefault(userType, Optional.empty());
 
         List<User> users = userService.search(
-                page,
+                page - 1,
                 size,
                 Optional.of(firstName),
                 Optional.of(lastName),
                 enteredUserType
         );
-
-        displayUser(users);
+        return users;
     }
+
 
     static void viewUser() {
         List<User> users = userService.search(
@@ -212,6 +215,16 @@ public class UserInput extends InputUtility {
         displayUser(users);
     }
 
+    static boolean login() {
+        String username = ProjectInput.getString("Username:");
+        String password = ProjectInput.getString("Password:");
+        return AccountUtility.login(username, password);
+    }
+
+    static void createUser() {
+        userService.create(getUserInput());
+    }
+
     static void userMenu() {
         while (true) {
             System.out.println("\nUser Menu:");
@@ -220,7 +233,7 @@ public class UserInput extends InputUtility {
             System.out.println("3.Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
             if (choice == 1) {
-                userService.create(getUserInput());
+                createUser();
             } else if (choice == 2) {
                 viewUser();
             } else if (choice == 3) {

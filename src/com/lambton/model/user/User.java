@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class User extends BaseModel {
+    private static final long serialVersionUID = 2591121789721221043L;
     private String firstName;
     private String lastName;
     private UserType userType;

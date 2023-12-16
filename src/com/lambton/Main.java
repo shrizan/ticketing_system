@@ -1,11 +1,12 @@
 package com.lambton;
 
 import com.lambton.common.AppConstant;
+import com.lambton.enums.user.UserType;
 import com.lambton.model.user.Manager;
 import com.lambton.utility.AccountUtility;
 import com.lambton.utility.FileUtilityImpl;
 
-import static com.lambton.ProjectInput.projectMenu;
+import java.util.List;
 
 public class Main {
 
@@ -14,36 +15,78 @@ public class Main {
         managerFileUtility.initFiles();
     }
 
-    static void mainMenu() {
-        System.out.println("\nMain Menu:");
-        System.out.println("1.Users");
-        System.out.println("2.Projects");
-        System.out.println("3.Issues");
-        System.out.println("4.Exit");
-        int choice = ProjectInput.getInt("Enter your choice:");
-        if (choice == 1) {
-            UserInput.userMenu();
-        } else if (choice == 2) {
-            projectMenu();
-        } else if (choice == 3) {
-            IssueInput.issueMenu();
+    static void userMenu() {
+        while (true) {
+            System.out.println("\nMain Menu:");
+            System.out.println("1.Projects");
+            System.out.println("2.Issues");
+            System.out.println("3.log out");
+            int choice = ProjectInput.getInt("Enter your choice:");
+            if (choice == 1) {
+                ProjectInput.userProjectMenu();
+            } else if (choice == 2) {
+                IssueInput.userMenu();
+            } else if (choice == 3) {
+                AccountUtility.logOut();
+                return;
+            }
         }
+    }
+
+    static void managerMenu() {
+        while (true) {
+            System.out.println("\nMain Menu:");
+            System.out.println("1.Users");
+            System.out.println("2.Projects");
+            System.out.println("3.Issues");
+            System.out.println("4.Log out");
+            int choice = ProjectInput.getInt("Enter your choice:");
+            if (choice == 1) {
+                UserInput.userMenu();
+            } else if (choice == 2) {
+                ProjectInput.managerProjectMenu();
+            } else if (choice == 3) {
+                IssueInput.managerMenu();
+            } else if (choice == 4) {
+                AccountUtility.logOut();
+                return;
+            }
+        }
+    }
+
+    static void mainMenu() {
+        List<Integer> choices = List.of(1, 2, 3);
+        while (true) {
+            System.out.println("1. Register User");
+            System.out.println("2. Login");
+            System.out.println("3. Exit");
+            int choice = InputUtility.getInt("Select an option:");
+            if (choices.contains(choice)) {
+                if (choice == 1) {
+                    UserInput.createUser();
+                } else if (choice == 2) {
+                    if (UserInput.login()) {
+                        System.out.printf("*****Welcome back (%s)*****\n", AccountUtility.loggedInUser.getFullName());
+                        if (AccountUtility.loggedInUser.getUserType().equals(UserType.MANAGER)) {
+                            managerMenu();
+                        } else {
+                            userMenu();
+                        }
+                    } else {
+                        System.out.println("Invalid username or password");
+                    }
+                } else {
+                    return;
+                }
+            } else {
+                System.out.println("Invalid option!!!");
+            }
+        }
+
     }
 
     public static void main(String[] args) {
         initFile();
-        while (true) {
-            try {
-                if (AccountUtility.loggedInUser == null) {
-                    System.out.println("User not logged in !!!");
-                    String username = ProjectInput.getString("Username:");
-                    String password = ProjectInput.getString("Password:");
-                    AccountUtility.login(username, password);
-                }
-                mainMenu();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+        mainMenu();
     }
 }

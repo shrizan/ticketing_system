@@ -4,7 +4,10 @@ import com.lambton.common.store.StoreImpl;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
+import com.lambton.enums.user.UserType;
 import com.lambton.model.issue.Issue;
+import com.lambton.model.project.Project;
+import com.lambton.utility.AccountUtility;
 import com.lambton.utility.FileUtility;
 
 import java.util.List;
@@ -58,6 +61,7 @@ public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements Iss
                 .readAllEntities()
                 .values()
                 .stream()
+                .filter(this::filterByUser)
                 .skip(page * size)
                 .limit(size)
                 .filter(filterByTitle(optionalTitle))
@@ -86,5 +90,11 @@ public class IssueStoreImpl<T extends Issue> extends StoreImpl<T> implements Iss
 
     private static <T extends Issue> Predicate<T> filterByIssueType(Optional<IssueType> optionalIssueType) {
         return issue -> optionalIssueType.map(issueType -> issue.getIssueType().equals(issueType)).orElse(true);
+    }
+
+    private boolean filterByUser(Issue issue) {
+        if (AccountUtility.loggedInUser.getUserType().equals(UserType.MANAGER)) return true;
+        else
+            return issue.getAssignedTos().stream().anyMatch(member -> member.getId().equals(AccountUtility.loggedInUser.getId()));
     }
 }

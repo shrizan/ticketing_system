@@ -2,14 +2,17 @@ package com.lambton;
 
 import com.lambton.common.AppConstant;
 import com.lambton.common.util.AppUtil;
+import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
+import com.lambton.enums.user.UserType;
 import com.lambton.model.comment.Comment;
 import com.lambton.model.project.NewProject;
 import com.lambton.model.project.EnhancementProject;
 import com.lambton.model.project.Project;
 import com.lambton.model.user.User;
 import com.lambton.service.ProjectService;
+import com.lambton.utility.AccountUtility;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +22,18 @@ import java.util.Optional;
 public class ProjectInput extends InputUtility {
 
     public static ProjectService projectService = new ProjectService();
+
+    private static ProjectType getProjectType() {
+        String choice = getString("1.New Project\t2.Enhancement\nEnter Option(or press enter):");
+        switch (choice) {
+            case "1":
+                return ProjectType.NEW;
+            case "2":
+                return ProjectType.ENHANCEMENT;
+            default:
+                return null;
+        }
+    }
 
     static void printHeader() {
         System.out.println(AppUtil.formatString(
@@ -57,13 +72,16 @@ public class ProjectInput extends InputUtility {
         if (choice == 1) {
             return new NewProject(title, description, ProjectStatus.IN_PROGRESS);
         } else {
-            System.out.println("Link to the project:");
-            List<Project> projects = projectService.search(
-                    AppConstant.DEFAULT_PAGE,
-                    AppConstant.DEFAULT_SIZE, Optional.empty(),
-                    Optional.empty());
-            Project project = ProjectInput.displayProjectsForSelect(projects);
-            return new EnhancementProject(title, description, ProjectStatus.IN_PROGRESS, project);
+            Project parent = null;
+            String linkToTheParent = getString("Would you like to add parent project?(Y/N)");
+            if (linkToTheParent.equalsIgnoreCase("y")) {
+                List<Project> projects = projectService.search(
+                        AppConstant.DEFAULT_PAGE,
+                        AppConstant.DEFAULT_SIZE, Optional.empty(),
+                        Optional.empty());
+                parent = ProjectInput.displayProjectsForSelect(projects);
+            }
+            return new EnhancementProject(title, description, ProjectStatus.IN_PROGRESS, parent);
         }
     }
 
@@ -76,7 +94,8 @@ public class ProjectInput extends InputUtility {
                 return selectProject(projects);
 
             } else if (choice == 2) {
-                searchProject();
+                List<Project> filteredProject = searchProject();
+                return displayProjectsForSelect(filteredProject);
             } else if (choice == 3) {
                 return null;
             }
@@ -112,6 +131,21 @@ public class ProjectInput extends InputUtility {
         if (!description.isEmpty()) {
             project.setDescription(description);
         }
+
+        if (project.getProjectType() == ProjectType.ENHANCEMENT) {
+            if (project.getParent() != null) {
+                System.out.println(project.getParent());
+            }
+            String choice = getString("Would you like to update the parent project?(Y/N):");
+            if (choice.equalsIgnoreCase("y")) {
+                List<Project> projects = projectService.search(
+                        AppConstant.DEFAULT_PAGE,
+                        AppConstant.DEFAULT_SIZE, Optional.empty(),
+                        Optional.empty());
+                project.setParent(ProjectInput.displayProjectsForSelect(projects));
+            }
+        }
+
         projectService.update(project.getId(), project);
     }
 
@@ -173,31 +207,57 @@ public class ProjectInput extends InputUtility {
         }
     }
 
-    static void displayDetails(Project project) {
-        List<Integer> choices = List.of(1, 2, 3, 4, 5, 6);
+    static void displayUserDetails(Project project) {
+        List<Integer> choices = List.of(1, 2, 3);
         while (true) {
             printHeader();
             System.out.printf("%s%s%n", getSN(Integer.toString(1), 30), project);
-            int choice = getInt("1.Update \t2.Delete \t3.Add team member \t4.Remove Team member\t5.Comments\t6.Update Status \t7.Back\nSelect Option:");
+            int choice = getInt("1.Comments\t2.Update Status \t3.Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
-                    update(project);
-                } else if (choice == 2) {
-                    remove(project);
-                } else if (choice == 3) {
-                    addTeamMember(project);
-                } else if (choice == 4) {
-                    removeTeamMember(project);
-                } else if (choice == 5) {
                     displayComments(project);
-                } else if (choice == 6) {
+                } else if (choice == 2) {
                     ProjectStatus status = getStatus();
                     project.setProjectStatus(status);
+                    project.setEndDate(LocalDate.now());
                     projectService.update(project.getId(), project);
-                } else if (choice == 7) {
-                    break;
+                } else if (choice == 3) {
+                    return;
                 }
             }
+        }
+    }
+
+    static void displayDetails(Project project) {
+        if (AccountUtility.loggedInUser.getUserType().equals(UserType.MANAGER)) {
+            List<Integer> choices = List.of(1, 2, 3, 4, 5, 6,7);
+            while (true) {
+                printHeader();
+                System.out.printf("%s%s%n", getSN(Integer.toString(1), 30), project);
+                int choice = getInt("1.Update \t2.Delete \t3.Add team member \t4.Remove Team member\t5.Comments\t6.Update Status \t7.Back\nSelect Option:");
+                if (choices.contains(choice)) {
+                    if (choice == 1) {
+                        update(project);
+                    } else if (choice == 2) {
+                        remove(project);
+                    } else if (choice == 3) {
+                        addTeamMember(project);
+                    } else if (choice == 4) {
+                        removeTeamMember(project);
+                    } else if (choice == 5) {
+                        displayComments(project);
+                    } else if (choice == 6) {
+                        ProjectStatus status = getStatus();
+                        project.setProjectStatus(status);
+                        project.setEndDate(LocalDate.now());
+                        projectService.update(project.getId(), project);
+                    } else if (choice == 7) {
+                        return;
+                    }
+                }
+            }
+        } else {
+            displayUserDetails(project);
         }
     }
 
@@ -209,14 +269,16 @@ public class ProjectInput extends InputUtility {
                 Project project = selectProject(projects);
                 displayDetails(project);
             } else if (choice == 2) {
-                searchProject();
+                List<Project> filteredProject = searchProject();
+                displayProjects(filteredProject);
+                return;
             } else if (choice == 3) {
                 return;
             }
         }
     }
 
-    static void searchProject() {
+    static List<Project> searchProject() {
         int page = -1;
         while (!(page >= 0)) {
             page = ProjectInput.getInt("Page(Valid page start from 1):");
@@ -227,26 +289,29 @@ public class ProjectInput extends InputUtility {
             size = ProjectInput.getInt("Page(Valid size is greater than 5):");
         }
         String title = ProjectInput.getString("Project title(optional):");
-        List<Project> projects = projectService.search(page, size, Optional.of(title), Optional.of(ProjectType.ENHANCEMENT));
-        displayProjects(projects);
-        int choice = 0;
-        while (!(choice == 1 || choice == 2 || choice == 3)) {
-            choice = ProjectInput.getInt("1. Filter Again\t\t2. Delete\t\t3. Update\nSelect Option:");
-        }
-        if (choice == 1) searchProject();
-        else if (choice == 2) {
-            choice = ProjectInput.getInt("Enter SN from the view:");
-            if (!(choice < 1 || choice > projects.size())) {
-                Project project = projects.get(choice - 1);
-                projectService.remove(project.getId());
-                displayProjects(projectService.search(page, size, Optional.of(title), Optional.of(ProjectType.ENHANCEMENT)));
-            } else {
-                System.out.println("You selected wrong!!!");
+        ProjectType projectType = getProjectType();
+        return projectService.search(page, size, Optional.of(title), projectType == null ? Optional.empty() : Optional.of(projectType));
+    }
+
+    static void userProjectMenu() {
+        while (true) {
+            System.out.println("\nProject Menu:");
+            System.out.println("1.View");
+            System.out.println("2.Main menu");
+            int choice = ProjectInput.getInt("Enter your choice:");
+            if (choice == 1) {
+                List<Project> projects = projectService.search(
+                        AppConstant.DEFAULT_PAGE,
+                        AppConstant.DEFAULT_SIZE, Optional.empty(),
+                        Optional.empty());
+                displayProjects(projects);
+            } else if (choice == 2) {
+                return;
             }
         }
     }
 
-    static void projectMenu() {
+    static void managerProjectMenu() {
         while (true) {
             System.out.println("\nProject Menu:");
             System.out.println("1.Create");

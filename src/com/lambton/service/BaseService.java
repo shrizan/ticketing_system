@@ -25,7 +25,7 @@ public abstract class BaseService<T extends BaseModel, S extends Store<T>> {
     }
 
     public void update(String entityId, T entity) {
-        if (null == AccountUtility.loggedInUser || AccountUtility.loggedInUser.getUserType() != UserType.MANAGER) {
+        if (null == AccountUtility.loggedInUser) {
             System.out.println("User not authorized!!!");
             return;
         }
