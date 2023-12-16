@@ -4,7 +4,7 @@ import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
 
 public class EnhancementProject extends Project {
-    public EnhancementProject(String title, String description,ProjectStatus projectStatus) {
-        super(title, description, ProjectType.ENHANCEMENT, projectStatus);
+    public EnhancementProject(String title, String description,ProjectStatus projectStatus,Project parent) {
+        super(title, description, ProjectType.ENHANCEMENT, projectStatus,parent);
     }
 }

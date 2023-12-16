@@ -37,6 +37,7 @@ public abstract class StoreImpl<T extends BaseModel> implements Store<T> {
         var allEntities = fileUtility.readAllEntities();
         allEntities.remove(entityId);
         allEntities.put(entity.getId(), entity);
+        fileUtility.writeToFile(allEntities);
         return entity;
     }
 
