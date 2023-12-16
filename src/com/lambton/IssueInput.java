@@ -1,6 +1,7 @@
 package com.lambton;
 
 import com.lambton.common.AppConstant;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
@@ -21,6 +22,22 @@ import java.util.Optional;
 
 public class IssueInput extends InputUtility {
     static IssueService issueService = new IssueService();
+
+    private static void printHeader() {
+        System.out.println(
+                AppUtil.formatString(
+                        "SN",
+                        "Title",
+                        "Description",
+                        "Project",
+                        "Parent Issue",
+                        "Assigned By",
+                        "Type",
+                        "Priority",
+                        "Status"
+                )
+        );
+    }
 
     private static IssueType getIssueType(int choice) {
         switch (choice) {
@@ -163,7 +180,7 @@ public class IssueInput extends InputUtility {
             choice = getString("Want to add another one?Y/N ");
         } while (choice.equalsIgnoreCase("y"));
         issue.setAssignedTos(users);
-        issueService.updateIssue(issue.getId(), issue);
+        issueService.update(issue.getId(), issue);
     }
 
     static void addIssuesToSuggestionList(Issue issue) {
@@ -209,26 +226,18 @@ public class IssueInput extends InputUtility {
         String choice = getString("Y to Link to parent other No:");
         if (choice.equalsIgnoreCase("Y")) {
             addIssuesToSuggestionList(issue);
-            issueService.updateIssue(issue.getId(), issue);
+            issueService.update(issue.getId(), issue);
             System.out.println("Parent linked");
         }
     }
 
     static void createNewIssue() {
-        Issue issue = issueService.createIssue(getIssueInput());
+        Issue issue = issueService.create(getIssueInput());
         if (issue != null) {
             assignTo(issue);
             addParent(issue);
         }
         System.out.println("New Issue Created!!!");
-    }
-
-    static void displayList(List<Issue> issues) {
-        System.out.println("SN \t\t | Title | \t\t | Description |");
-        for (int i = 0; i < issues.size(); i++) {
-            Issue issue = issues.get(i);
-            System.out.printf("%d \t\t | %s | \t\t | %s |\n", i + 1, issue.getTitle(), issue.getDescription());
-        }
     }
 
     static void updateIssue(Issue issue) {
@@ -249,7 +258,7 @@ public class IssueInput extends InputUtility {
         Priority priority = getPriority(choice);
         Issue updatedIssue = createNewIssue(issue.getIssueType(), title, description, project, priority);
         updatedIssue.setId(issue.getId());
-        issueService.updateIssue(issue.getId(), updatedIssue);
+        issueService.update(issue.getId(), updatedIssue);
         input = getString("Do you want to update assign to(Y/N):");
         if (input.equalsIgnoreCase("Y")) {
             assignTo(issue);
@@ -263,7 +272,7 @@ public class IssueInput extends InputUtility {
     }
 
     static void removeIssue(Issue issue) {
-        issueService.removeIssue(issue.getId(), issue.getIssueType());
+        issueService.remove(issue.getId());
         //issues.remove(issue);
         //displayList(issues);
     }
@@ -288,19 +297,19 @@ public class IssueInput extends InputUtility {
     }
 
     static void displayComments(Issue issue) {
-        CommentInput.displayComments(issue.getComment());
         List<Integer> choices = List.of(1, 2, 3);
         while (true) {
-            int choice = getInt("1. Add 2. Remove 3. Go Back");
+            CommentInput.displayComments(issue.getComment());
+            int choice = getInt("1. Add 2. Remove 3. Go Back\nSelect Option:");
             if (choices.contains(choice)) {
                 if (choice == 1) {
                     Comment comment = CommentInput.getComment();
                     issue.getComment().add(comment);
-                    issueService.updateIssue(issue.getId(), issue);
+                    issueService.update(issue.getId(), issue);
                 } else if (choice == 2) {
                     Comment comment = CommentInput.selectComment(issue.getComment());
                     issue.getComment().remove(comment);
-                    issueService.updateIssue(issue.getId(), issue);
+                    issueService.update(issue.getId(), issue);
                 } else {
                     return;
                 }
@@ -324,7 +333,7 @@ public class IssueInput extends InputUtility {
                     System.out.println("Old status");
                     IssueStatus status = getIssueStatus();
                     issue.setIssueStatus(status);
-                    issueService.updateIssue(issue.getId(), issue);
+                    issueService.update(issue.getId(), issue);
                 } else {
                     return;
                 }
@@ -333,10 +342,10 @@ public class IssueInput extends InputUtility {
     }
 
     static void displayIssues(List<Issue> issues) {
-        System.out.println("SN \t\t | Title | \t\t | Description |");
+        printHeader();
         for (int i = 0; i < issues.size(); i++) {
             Issue issue = issues.get(i);
-            System.out.printf("%d \t\t | %s | \t\t | %s |\n", i + 1, issue.getTitle(), issue.getDescription());
+            System.out.printf("%s%s%n", getSN(Integer.toString(i + 1)), issue);
         }
     }
 

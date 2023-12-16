@@ -1,14 +1,15 @@
 package com.lambton.model.user;
 
 import com.lambton.common.model.*;
+import com.lambton.common.util.AppUtil;
 import com.lambton.enums.user.UserType;
 
+import java.util.List;
 import java.util.UUID;
 
 public class User extends BaseModel {
     private String firstName;
     private String lastName;
-    private transient String fullName;
     private UserType userType;
     private String username;
     private String password;
@@ -60,5 +61,15 @@ public class User extends BaseModel {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return AppUtil.formatString(
+                30,
+                getFullName(),
+                username,
+                userType.toString()
+        );
     }
 }
