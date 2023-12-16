@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Project extends BaseModel {
+    private static final long serialVersionUID = -53592671601604527L;
     private String title;
     private String description;
     private ProjectType projectType;
@@ -89,5 +90,13 @@ public class Project extends BaseModel {
                 null == startDate ? "" : startDate.toString(),
                 null == endDate ? "" : endDate.toString()
         );
+    }
+
+    public Project getParent() {
+        return parent;
+    }
+
+    public void setParent(Project parent) {
+        this.parent = parent;
     }
 }

@@ -22,26 +22,10 @@ public class UserService extends BaseService<User, UserStore<User>> {
 
     @Override
     public User create(User user) {
-        if (!store.allEntities().values().isEmpty()) {
-            if (null != AccountUtility.loggedInUser && AccountUtility.loggedInUser.getUserType().equals(UserType.MANAGER)) {
-                User createdUser = store.createEntity(user);
-                if (null != createdUser) System.out.println("New user created!!!");
-                else System.out.println("Something went wrong while creating the user!!!");
-                return createdUser;
-            } else {
-                System.out.println("Unauthorized user!!!");
-            }
-        } else {
-            if (user.getUserType() == UserType.MANAGER) {
-                User createdUser = store.createEntity(user);
-                AccountUtility.loggedInUser = user;
-                if (null != createdUser) System.out.println("New user created!!!");
-                else System.out.println("Something went wrong while creating the user!!!");
-            } else {
-                System.out.println("First create a manager to create other user!!!");
-            }
-        }
-        return null;
+        User createdUser = store.createEntity(user);
+        if (null != createdUser) System.out.println("New user created!!!");
+        else System.out.println("Something went wrong while creating the user!!!");
+        return createdUser;
     }
 
     public List<User> search(long page, long size, Optional<String> firstName, Optional<String> lastName, Optional<UserType> userType) {

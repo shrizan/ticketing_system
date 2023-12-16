@@ -5,7 +5,9 @@ import com.lambton.common.util.AppUtil;
 import com.lambton.enums.issue.IssueStatus;
 import com.lambton.enums.issue.IssueType;
 import com.lambton.enums.issue.Priority;
+import com.lambton.enums.project.ProjectStatus;
 import com.lambton.enums.project.ProjectType;
+import com.lambton.enums.user.UserType;
 import com.lambton.model.comment.Comment;
 import com.lambton.model.issue.Bug;
 import com.lambton.model.issue.Issue;
@@ -16,6 +18,7 @@ import com.lambton.model.user.User;
 import com.lambton.service.IssueService;
 import com.lambton.utility.AccountUtility;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -212,7 +215,7 @@ public class IssueInput extends InputUtility {
         });
         int choice = 0;
         while (true) {
-            choice = getInt("Select SN to Add:");
+            choice = getInt("\nSelect SN to Add:");
             if (choice < 1 || choice > issues.size()) {
                 System.out.println("Invalid selection!!!");
             } else {
@@ -278,13 +281,13 @@ public class IssueInput extends InputUtility {
     }
 
     static void searchIssue() {
-        long page = getInt("Page:");
+        long page = getInt("Page(start from 1):");
         long size = getInt("Size:");
         String title = getString("Title:");
         IssueType issueType = getIssueType();
 
         List<Issue> issues = issueService.searchIssue(
-                page,
+                page - 1,
                 size,
                 Optional.of(title),
                 Optional.empty(),
@@ -317,7 +320,7 @@ public class IssueInput extends InputUtility {
         }
     }
 
-    public static void issueDetails(Issue issue) {
+    static void displayUserIssueDetails(Issue issue) {
         System.out.println(issue);
         List<Integer> choices = List.of(1, 2, 3);
         while (true) {
@@ -338,6 +341,34 @@ public class IssueInput extends InputUtility {
                     return;
                 }
             }
+        }
+    }
+
+    public static void issueDetails(Issue issue) {
+        if (AccountUtility.loggedInUser.getUserType().equals(UserType.MANAGER)) {
+            System.out.println(issue);
+            List<Integer> choices = List.of(1, 2, 3);
+            while (true) {
+                int choice = getInt("1. Update 2. Remove 3. Comments 4. Change Status 5. Back\nSelect Option:");
+                if (choices.contains(choice)) {
+                    if (choice == 1) {
+                        updateIssue(issue);
+                    } else if (choice == 2) {
+                        removeIssue(issue);
+                    } else if (choice == 3) {
+                        displayComments(issue);
+                    } else if (choice == 4) {
+                        System.out.println("Old status");
+                        IssueStatus status = getIssueStatus();
+                        issue.setIssueStatus(status);
+                        issueService.update(issue.getId(), issue);
+                    } else {
+                        return;
+                    }
+                }
+            }
+        } else {
+            displayUserIssueDetails(issue);
         }
     }
 
@@ -384,18 +415,35 @@ public class IssueInput extends InputUtility {
         }
     }
 
-    public static void issueMenu() {
+    public static void userMenu() {
+        while (true) {
+            System.out.println("\nIssue Menu:");
+            System.out.println("1. View");
+            System.out.println("2. Main menu");
+            int choice = ProjectInput.getInt("Enter your choice:");
+
+            if (choice == 1) {
+                display();
+            } else if (choice == 2) {
+                return;
+            }
+        }
+    }
+
+    public static void managerMenu() {
         while (true) {
             System.out.println("\nIssue Menu:");
             System.out.println("1. Create");
             System.out.println("2. View(Update or Remove)");
-            System.out.println("5. Main menu");
+            System.out.println("3. Main menu");
             int choice = ProjectInput.getInt("Enter your choice:");
 
             if (choice == 1) {
                 createNewIssue();
             } else if (choice == 2) {
                 display();
+            } else if (choice == 3) {
+                return;
             }
         }
     }

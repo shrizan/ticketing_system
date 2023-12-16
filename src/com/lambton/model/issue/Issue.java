@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Issue extends BaseModel {
+    private static final long serialVersionUID = -3958036393516461671L;
     private String title;
     private String description;
     private Project project;
@@ -95,5 +96,9 @@ public class Issue extends BaseModel {
                 priority.toString(),
                 issueStatus.toString()
         );
+    }
+
+    public List<User> getAssignedTos() {
+        return assignedTos;
     }
 }
